@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon App de Code</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h1 { color: #ff4757; }
+        button {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: 0.2s;
+        }
+        button:hover { background-color: #e84118; }
+        .hidden { display: none; }
+        
+        /* Style du jeu */
+        #zone-jeu {
+            width: 100%;
+            height: 300px;
+            background-color: #2f3542;
+            position: relative;
+            border-radius: 8px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        #cible {
+            width: 40px;
+            height: 40px;
+            background-color: #ff4757;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+        }
+
+        /* Style de la partie Apprendre */
+        .carte-langage {
+            background: #2f3542;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .badge {
+            background: #ff4757;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="ecran-accueil">
+        <h1>Bienvenue dans ton App !</h1>
+        <p>Que veux-tu faire aujourd'hui ?</p>
+        <button onclick="ouvrirEntrainement()">🎯 S'entraîner (Jeu)</button>
+        <button onclick="ouvrirApprendre()">📚 Apprendre le Code</button>
+    </div>
+
+    <div id="ecran-jeu" class="hidden">
+        <h1>Attrape la cible !</h1>
+        <p>Score : <span id="score">0</span></p>
+        <div id="zone-jeu">
+            <div id="cible" onclick="toucherCible()"></div>
+        </div>
+        <br>
+        <button onclick="retourAccueil()">⬅️ Retour</button>
+    </div>
+
+    <div id="ecran-apprendre" class="hidden">
+        <h1>Apprendre les Langages</h1>
+        <p>Découvre la différence entre Java et JavaScript :</p>
+        
+        <div class="carte-langage">
+            <h3><span class="badge">Java</span></h3>
+            <p><strong>C'est quoi ?</strong> Un langage très puissant utilisé pour créer des applications de téléphone (Android), des logiciels d'ordinateur et de grands systèmes de serveurs.</p>
+            <p><em>Exemple : Le jeu Minecraft original a été entièrement codé en Java !</em></p>
+        </div>
+
+        <div class="carte-langage">
+            <h3><span class="badge">JavaScript</span></h3>
+            <p><strong>C'est quoi ?</strong> Le langage du web. Il sert à rendre les pages internet vivantes et interactives (comme les boutons sur lesquels tu cliques ou ce jeu !).</p>
+            <p><em>Exemple : C'est le langage qu'on utilise en ce moment même pour faire bouger la cible rouge.</em></p>
+        </div>
+
+        <button onclick="retourAccueil()">⬅️ Retour</button>
+    </div>
+</div>
+
+<script>
+    let score = 0;
+    const cible = document.getElementById('cible');
+    const zoneJeu = document.getElementById('zone-jeu');
+
+    function ouvrirEntrainement() {
+        changerEcran('ecran-jeu');
+        bougerCible();
+    }
+
+    function ouvrirApprendre() {
+        changerEcran('ecran-apprendre');
+    }
+
+    function retourAccueil() {
+        changerEcran('ecran-accueil');
+    }
+
+    function changerEcran(idEcran) {
+        document.getElementById('ecran-accueil').classList.add('hidden');
+        document.getElementById('ecran-jeu').classList.add('hidden');
+        document.getElementById('ecran-apprendre').classList.add('hidden');
+        
+        document.getElementById(idEcran).classList.remove('hidden');
+    }
+
+    function bougerCible() {
+        const maxX = zoneJeu.clientWidth - 40;
+        const maxY = zoneJeu.clientHeight - 40;
+        
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * maxY);
+        
+        cible.style.left = randomX + 'px';
+        cible.style.top = randomY + 'px';
+    }
+
+    function toucherCible() {
+        score++;
+        document.getElementById('score').innerText = score;
+        bougerCible();
+    }
+</script>
+
+</body>
+</html>

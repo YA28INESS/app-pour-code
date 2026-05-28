@@ -304,3 +304,354 @@
             border-radius: 8px;
             resize: none;
             margin-bottom: 60px;
+        }
+
+        /* Actions du bas */
+        .exercise-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .mode-toggle-btn {
+            background-color: var(--ia-green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .right-control {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .feedback-box {
+            background-color: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 6px;
+            border-left: 5px solid var(--accent-color);
+            display: none;
+            max-width: 400px;
+            font-size: 0.95rem;
+        }
+
+        .correction-btn {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .correction-btn:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Mon App Code</h2>
+        <button class="nav-btn active" onclick="switchTab('compte')">Compte</button>
+        <button class="nav-btn" onclick="switchTab('apprendre')">Apprendre</button>
+        <button class="nav-btn" onclick="switchTab('exercice')">Exercice</button>
+    </div>
+
+    <div class="main-content">
+
+        <div id="compte" class="tab-content active">
+            <h1>Gestion du Compte</h1>
+            
+            <div id="connectionBanner" class="status-banner status-disconnected">
+                Compte non connecté
+            </div>
+
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h3>Créer un compte</h3>
+                    <form onsubmit="handleAuth(event, 'inscription')">
+                        <div class="form-group">
+                            <label>Sauvegarder ma progression avec :</label>
+                            <select required>
+                                <option value="google">Google</option>
+                                <option value="email">Adresse E-mail</option>
+                                <option value="telephone">Numéro de téléphone</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom d'utilisateur :</label>
+                            <input type="text" placeholder="Ex: Lucas" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mot de passe :</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="regPassword" placeholder="••••••••" required>
+                                <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)">👁️‍🗨️</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Vérification du mot de passe :</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="regPasswordConfirm" placeholder="••••••••" required>
+                                <button type="button" class="eye-btn" onclick="togglePassword('regPasswordConfirm', this)">👁️‍🗨️</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">S'inscrire</button>
+                    </form>
+                </div>
+
+                <div class="auth-card">
+                    <h3>Se connecter</h3>
+                    <form onsubmit="handleAuth(event, 'connexion')">
+                        <div class="form-group">
+                            <label>Support de connexion :</label>
+                            <select required>
+                                <option value="google">Google</option>
+                                <option value="email">Adresse E-mail</option>
+                                <option value="telephone">Numéro de téléphone</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom d'utilisateur :</label>
+                            <input type="text" placeholder="Ex: Lucas" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mot de passe :</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="loginPassword" placeholder="••••••••" required>
+                                <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)">👁️‍🗨️</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Se connecter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="apprendre" class="tab-content">
+            <h1>Apprendre les bases</h1>
+            
+            <button id="startBtn" class="learn-intro-btn" onclick="startLearning()">Commencer l'exercice</button>
+
+            <div id="lessonBox" class="lesson-box">
+                <div class="ia-badge">✨ Généré par l'IA d'apprentissage</div>
+                <div id="lessonText" class="lesson-text"></div>
+                <div class="lesson-nav-layout">
+                    <button id="prevBtn" class="lesson-nav-btn" onclick="changeLesson(-1)">Précédent</button>
+                    <button id="nextBtn" class="lesson-nav-btn" onclick="changeLesson(1)">Suivant</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="exercice" class="tab-content">
+            <h1>Zone d'Exercice</h1>
+            
+            <div class="exercise-layout">
+                <div id="iaQuestionBox" class="ia-question-box">
+                    <h3>🤖 Exercice avec des questions</h3>
+                    <div id="iaQuestionText" class="ia-question-text">
+                        Génération de la question en cours...
+                    </div>
+                </div>
+
+                <div class="editor-side">
+                    <textarea id="codeEditor" class="code-editor" placeholder="Écrivez votre code HTML ici..."></textarea>
+                    
+                    <div class="exercise-actions">
+                        <button id="modeBtn" class="mode-toggle-btn" onclick="toggleExerciseMode()">Exercice libre</button>
+                        
+                        <div class="right-control">
+                            <div id="feedbackBox" class="feedback-box"></div>
+                            <button class="correction-btn" onclick="checkCode()">Corriger l'exercice</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- NAVIGATION ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- COMPTE ET SECURITE ---
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                btn.innerText = "👁️";
+            } else {
+                input.type = "password";
+                btn.innerText = "👁️‍🗨️";
+            }
+        }
+
+        function handleAuth(event, type) {
+            event.preventDefault();
+            const banner = document.getElementById('connectionBanner');
+            if (type === 'inscription') {
+                const p1 = document.getElementById('regPassword').value;
+                const p2 = document.getElementById('regPasswordConfirm').value;
+                if (p1 !== p2) { return alert("Les mots de passe ne correspondent pas !"); }
+            }
+            banner.innerText = "Compte connecté";
+            banner.className = "status-banner status-connected";
+            alert(type === 'inscription' ? "Compte créé et connecté !" : "Connexion réussie !");
+        }
+
+        // --- IA APPRENDRE ---
+        const iaLessons = [
+            "Salut ! Je suis ton assistant IA. Commençons doucement. Le HTML sert à fabriquer le squelette d'un site web, comme la structure en bois d'une cabane.",
+            "En HTML, on donne des ordres avec des mots entourés de flèches appelés des 'balises'. Presque toutes s'ouvrent au début et se ferment à la fin avec un slash (/).",
+            "Pour dire au site 'ceci est un très grand titre principal', l'IA utilise la balise &lt;h1&gt; au début et &lt;/h1&gt; à la fin de ta phrase.",
+            "Si tu veux simplement ajouter une phrase normale ou un paragraphe sous ton grand titre, entoure ton texte avec &lt;p&gt; et &lt;/p&gt;."
+        ];
+        let currentLessonIndex = 0;
+
+        function startLearning() {
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('lessonBox').style.display = 'block';
+            showLesson();
+        }
+
+        function showLesson() {
+            document.getElementById('lessonText').innerHTML = iaLessons[currentLessonIndex];
+            document.getElementById('prevBtn').disabled = (currentLessonIndex === 0);
+            document.getElementById('nextBtn').innerText = (currentLessonIndex === iaLessons.length - 1) ? "Terminer" : "Suivant";
+        }
+
+        function changeLesson(direction) {
+            currentLessonIndex += direction;
+            if (currentLessonIndex >= iaLessons.length) {
+                alert("Bravo, tu as vu toutes mes explications ! Passe à l'onglet Exercice pour que je te teste !");
+                currentLessonIndex = iaLessons.length - 1;
+            } else if (currentLessonIndex < 0) {
+                currentLessonIndex = 0;
+            }
+            showLesson();
+        }
+
+        // --- IA EXERCICES ET QUESTIONS ---
+        const iaQuestions = [
+            {
+                text: "Écris un titre numéro 1 contenant uniquement le mot 'Bienvenue'. N'oublie pas de bien fermer ta balise !",
+                tagRequired: "<h1>",
+                tagCloseRequired: "</h1>",
+                contentRequired: "Bienvenue"
+            },
+            {
+                text: "Parfait ! Maintenant, crée un paragraphe simple contenant le mot 'Bonjour' en utilisant la balise appropriée.",
+                tagRequired: "<p>",
+                tagCloseRequired: "</p>",
+                contentRequired: "Bonjour"
+            }
+        ];
+        let currentQuestionIndex = 0;
+        let isFreeMode = false;
+
+        function loadQuestion() {
+            const qText = document.getElementById('iaQuestionText');
+            if (isFreeMode) {
+                qText.innerHTML = "Tu es en mode libre ! Écris le code HTML de ton choix (titres, paragraphes...). Je vérifierai s'il n'y a pas d'erreurs générales.";
+            } else {
+                qText.innerHTML = iaQuestions[currentQuestionIndex].text;
+            }
+        }
+
+        function toggleExerciseMode() {
+            const modeBtn = document.getElementById('modeBtn');
+            const iaBox = document.getElementById('iaQuestionBox');
+            const feedback = document.getElementById('feedbackBox');
+            
+            feedback.style.display = "none";
+            isFreeMode = !isFreeMode;
+
+            if (isFreeMode) {
+                modeBtn.innerText = "Mode Guidé";
+                iaBox.style.backgroundColor = "#27ae60";
+                iaBox.querySelector('h3').innerText = "📝 Exercice Libre";
+            } else {
+                modeBtn.innerText = "Exercice libre";
+                iaBox.style.backgroundColor = "var(--ia-green)";
+                iaBox.querySelector('h3').innerText = "🤖 Exercice avec des questions";
+            }
+            loadQuestion();
+        }
+
+        // Initialisation de la première question au chargement
+        window.onload = function() {
+            loadQuestion();
+        };
+
+        // --- CORRIGER L'EXERCICE ---
+        function checkCode() {
+            const code = document.getElementById('codeEditor').value.trim();
+            const feedback = document.getElementById('feedbackBox');
+            feedback.style.display = "block";
+
+            if (code === "") {
+                feedback.style.borderLeftColor = "var(--danger-color)";
+                feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA :</span> La zone est vide ! Écris quelque chose pour que je puisse corriger.";
+                return;
+            }
+
+            if (isFreeMode) {
+                // Vérification basique en mode libre
+                if ((code.includes('<') && code.includes('>')) && !code.includes('</')) {
+                    feedback.style.borderLeftColor = "var(--danger-color)";
+                    feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA Attention :</span> Tu as ouvert une balise mais tu as oublié de mettre une balise de fermeture avec un '/' !";
+                } else {
+                    feedback.style.borderLeftColor = "var(--success-color)";
+                    feedback.innerHTML = "<span style='color:var(--success-color); font-weight:bold;'>IA Analyse :</span> Ton code libre a l'air bien structuré ! Continue à expérimenter.";
+                }
+            } else {
+                // Mode Guidé (Vérification stricte de la question en cours)
+                const currentQ = iaQuestions[currentQuestionIndex];
+                
+                if (code.includes(currentQ.tagRequired) && code.includes(currentQ.tagCloseRequired) && code.includes(currentQ.contentRequired)) {
+                    feedback.style.borderLeftColor = "var(--success-color)";
+                    feedback.innerHTML = "<span style='color:var(--success-color); font-weight:bold;'>IA Succès !</span> C'est parfait ! Tu as correctement résolu ma question.";
+                    
+                    // Passer à la question suivante s'il y en a une
+                    if(currentQuestionIndex < iaQuestions.length - 1) {
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            loadQuestion();
+                            feedback.style.display = "none";
+                            document.getElementById('codeEditor').value = "";
+                        }, 2500);
+                    }
+                } else {
+                    feedback.style.borderLeftColor = "var(--danger-color)";
+                    let erreurs = "Voici ce qu'il faut corriger :<br>";
+                    if (!code.includes(currentQ.tagRequired)) erreurs += `- Il te manque la balise d'ouverture "${currentQ.tagRequired}"<br>`;
+                    if (!code.includes(currentQ.contentRequired)) erreurs += `- Tu as oublié d'écrire le texte exact "${currentQ.contentRequired}"<br>`;
+                    if (!code.includes(currentQ.tagCloseRequired)) erreurs += `- Il te manque la balise de fermeture "${currentQ.tagCloseRequired}"`;
+                    feedback.innerHTML = `<span style='color:var(--danger-color); font-weight:bold;'>IA Erreur :</span><br>${erreurs}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

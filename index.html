@@ -1,26 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>app pour code</title>
+    <title>Application d'Apprentissage Code avec IA</title>
     <style>
-        /* --- CONFIGURATION GLOBALE & THÈME SOMBRE PAR DÉFAUT --- */
         :root {
-            --bg-color: #121212;
-            --text-color: #ffffff;
-            --sidebar-bg: #1e1e1e;
-            --accent-color: #007bff;
-            --border-color: #333333;
-        }
-
-        /* Thème clair si activé */
-        .light-theme {
-            --bg-color: #ffffff;
-            --text-color: #121212;
-            --sidebar-bg: #f4f4f4;
-            --accent-color: #0056b3;
-            --border-color: #cccccc;
+            --bg-color: #1e1e2e;
+            --sidebar-bg: #252538;
+            --text-color: #cdd6f4;
+            --accent-color: #89b4fa;
+            --success-color: #a6e3a1;
+            --danger-color: #f38ba8;
+            --card-bg: #313244;
+            --input-bg: #45475a;
+            --ia-green: #23a950;
         }
 
         * {
@@ -31,489 +25,282 @@
         }
 
         body {
+            display: flex;
             background-color: var(--bg-color);
             color: var(--text-color);
             height: 100vh;
-            display: flex;
-            flex-direction: column;
             overflow: hidden;
-            transition: background 0.3s, color 0.3s;
         }
 
-        /* --- 1. ÉCRAN D'ANIMATION DE BIENVENUE (SPLASH SCREEN) --- */
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #121212;
-            color: white;
+        /* Barre latérale */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s;
+            padding: 20px;
+            border-right: 1px solid #45475a;
         }
 
-        #splash-screen h1 {
-            font-size: 2.5rem;
-            /* L'animation fait une simple apparition progressive maintenant */
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        #splash-screen .credits {
-            position: absolute;
-            bottom: 20px;
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* --- 2. POPUP SÉLECTION DE LA LANGUE (1ÈRE FOIS) --- */
-        #lang-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9998;
-        }
-
-        .modal-content {
-            background: var(--sidebar-bg);
-            padding: 30px;
-            border-radius: 8px;
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             text-align: center;
-            max-width: 400px;
-            width: 90%;
-            border: 1px solid var(--border-color);
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .modal-content select {
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+
+        /* Zone principale */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            height: 100%;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        /* --- Onglet COMPTE --- */
+        .status-banner {
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .status-disconnected {
+            background-color: rgba(243, 139, 168, 0.15);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+        .status-connected {
+            background-color: rgba(166, 227, 161, 0.15);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .auth-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .auth-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .auth-card h3 {
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
-            margin: 20px 0;
-            background: var(--bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-        }
-
-        .modal-content button {
-            padding: 10px 20px;
-            background: var(--accent-color);
+            border-radius: 6px;
+            border: 1px solid #585b70;
+            background-color: var(--input-bg);
             color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            font-size: 1rem;
         }
 
-        /* --- 3. ARCHITECTURE DE L'APPLICATION --- */
-        #app-container {
+        .password-wrapper {
+            position: relative;
             display: flex;
-            flex: 1;
-            height: 100%;
-            overflow: hidden;
+            align-items: center;
         }
-
-        /* En-tête avec les options de langage de code */
-        header {
+        .password-wrapper input {
+            padding-right: 40px;
+        }
+        .eye-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 100;
-        }
-
-        .code-lang-selector {
-            background: var(--sidebar-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Zone de contenu principal */
-        main {
-            flex: 1;
-            padding: 40px 20px 20px 20px;
-            overflow-y: auto;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Barre latérale (PC / Ordinateur) */
-        nav {
-            background-color: var(--sidebar-bg);
-            border-right: 2px solid var(--border-color);
-            width: 250px;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-        }
-
-        nav button {
+            right: 10px;
             background: none;
             border: none;
-            color: var(--text-color);
-            padding: 15px 20px;
-            text-align: left;
-            font-size: 1.1rem;
             cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            user-select: none;
+        }
+
+        .submit-btn {
             width: 100%;
-        }
-
-        nav button.active {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        /* --- Barre de navigation basse (Téléphone) --- */
-        .bottom-nav {
-            display: none;
-            background-color: var(--sidebar-bg);
-            border-top: 2px solid var(--border-color);
-            height: 60px;
-        }
-
-        .bottom-nav button {
-            flex: 1;
-            background: none;
+            padding: 12px;
             border: none;
-            color: var(--text-color);
-            font-size: 0.9rem;
+            border-radius: 6px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
         }
 
-        .bottom-nav button.active {
-            background-color: var(--accent-color);
+        /* --- Onglet APPRENDRE --- */
+        .learn-intro-btn {
+            background-color: var(--ia-green);
             color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 40px auto;
+            display: block;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .learn-intro-btn:hover {
+            transform: scale(1.03);
+            opacity: 0.9;
         }
 
-        /* --- 4. STYLE DES CONTENUS (Apprendre / Exercice / Compte) --- */
-        .header-section {
+        .lesson-box {
+            display: none;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .ia-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .lesson-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .lesson-nav-layout {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
         }
 
-        .difficulty-indicator {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .bars {
-            display: flex;
-            gap: 4px;
-        }
-
-        .bar {
-            width: 6px;
-            height: 18px;
-            background: #444;
-            border-radius: 2px;
-        }
-
-        .easy .bar:nth-child(1) { background: #28a745; }
-        .medium .bar:nth-child(1), .medium .bar:nth-child(2) { background: #ffc107; }
-        .hard .bar:nth-child(1), .hard .bar:nth-child(2), .hard .bar:nth-child(3) { background: #dc3545; }
-
-        .account-box, .settings-box {
-            background: var(--sidebar-bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .btn {
-            background: var(--accent-color);
-            color: white;
+        .lesson-nav-btn {
+            padding: 10px 20px;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            border-radius: 6px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
             cursor: pointer;
-            margin-right: 10px;
-            margin-top: 10px;
+        }
+        .lesson-nav-btn:disabled {
+            background-color: #585b70;
+            cursor: not-allowed;
         }
 
-        .btn-secondary {
-            background: #6c757d;
+        /* --- Onglet EXERCICE --- */
+        .exercise-layout {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            height: calc(100% - 60px);
+            position: relative;
         }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            #app-container { flex-direction: column; }
-            nav { display: none; }
-            .bottom-nav { display: flex; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="splash-screen">
-        <h1>app pour code</h1> <div class="credits">creat by Ya28ine</div>
-    </div>
-
-    <div id="lang-modal">
-        <div class="modal-content">
-            <h3 id="modal-title">Select Language / Choisir la langue</h3>
-            <select id="global-lang-select">
-                <option value="en">English (USA)</option>
-                <option value="en-ca">English (Canada)</option>
-                <option value="fr-fr">Français (France)</option>
-                <option value="fr-ca">Français (Canada)</option>
-                <option value="es">Español</option>
-                <option value="de">Deutsch</option>
-            </select>
-            <button id="confirm-lang-btn" onclick="saveInitialLanguage()">OK</button>
-        </div>
-    </div>
-
-    <div id="app-container">
-        
-        <header id="code-header">
-            <select class="code-lang-selector" onchange="changeCodeLanguage(this.value)" id="code-select">
-                <option value="java">Java</option>
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="html">HTML/CSS</option>
-            </select>
-        </header>
-
-        <nav id="pc-nav">
-            <button class="nav-btn active" onclick="switchPage('learn')" data-text="nav-learn">Learn</button>
-            <button class="nav-btn" onclick="switchPage('exercise')" data-text="nav-exercise">Exercise</button>
-            <button class="nav-btn" onclick="switchPage('account')" data-text="nav-account">Account</button>
-        </nav>
-
-        <main>
-            <div id="page-learn" class="page active">
-                <div class="header-section">
-                    <h2 data-text="learn-title">Learning Center</h2>
-                    <div class="difficulty-indicator easy">
-                        <span data-text="diff-easy">Easy</span>
-                        <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-                    </div>
-                </div>
-                <div id="learn-content">
-                    <p data-text="learn-welcome">Welcome to your lesson. Select a code language above to begin.</p>
-                    <textarea id="learn-notes" style="width:100%; height:150px; margin-top:15px; background:var(--sidebar-bg); color:var(--text-color); padding:10px;" placeholder="Vos notes de cours ici..."></textarea>
-                </div>
-            </div>
-
-            <div id="page-exercise" class="page">
-                <div class="header-section">
-                    <h2 data-text="exercise-title">Training Exercises</h2>
-                    <div class="difficulty-indicator medium">
-                        <span data-text="diff-medium">Medium</span>
-                        <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-                    </div>
-                </div>
-                <div id="exercise-content">
-                    <p data-text="exercise-welcome">Practice your coding skills here. Your progress is saved automatically.</p>
-                    <textarea id="exercise-input" style="width:100%; height:150px; margin-top:15px; background:var(--sidebar-bg); color:var(--text-color); padding:10px;" placeholder="Écrivez votre code d'exercice ici..."></textarea>
-                </div>
-            </div>
-
-            <div id="page-account" class="page">
-                <h2 data-text="account-title" style="margin-bottom: 20px;">Account & Settings</h2>
-                
-                <div class="account-box">
-                    <h3 data-text="acc-management">Profile</h3>
-                    <p id="account-status" data-text="acc-logged-out">Status: Disconnected (Local Progress Only)</p>
-                    <button class="btn" onclick="simulatedLogin()" data-text="btn-login">Login</button>
-                    <button class="btn btn-secondary" onclick="simulatedRegister()" data-text="btn-register">Register</button>
-                </div>
-
-                <div class="settings-box">
-                    <h3 data-text="settings-title">Preferences</h3>
-                    <button class="btn" onclick="toggleTheme()" data-text="btn-theme">Screen Color: Black/White</button>
-                    
-                    <div style="margin-top: 15px;">
-                        <label data-text="settings-lang-label" style="display:block; margin-bottom:5px;">Change Application Language :</label>
-                        <select id="settings-lang-select" onchange="changeAppLanguage(this.value)" style="padding: 5px; background: var(--bg-color); color:var(--text-color);">
-                            <option value="en">English (USA)</option>
-                            <option value="en-ca">English (Canada)</option>
-                            <option value="fr-fr">Français (France)</option>
-                            <option value="fr-ca">Français (Canada)</option>
-                            <option value="es">Español</option>
-                            <option value="de">Deutsch</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <div class="bottom-nav" id="mobile-nav">
-            <button class="nav-btn active" onclick="switchPage('learn')" data-text="nav-learn">Learn</button>
-            <button class="nav-btn" onclick="switchPage('exercise')" data-text="nav-exercise">Exercise</button>
-            <button class="nav-btn" onclick="switchPage('account')" data-text="nav-account">Account</button>
-        </div>
-
-    </div>
-
-    <script>
-        const translations = {
-            "en": {
-                "nav-learn": "Learn", "nav-exercise": "Exercise", "nav-account": "Account",
-                "learn-title": "Learning Center", "diff-easy": "Easy", "learn-welcome": "Welcome to your lesson. Select a code language above to begin.",
-                "exercise-title": "Training Exercises", "diff-medium": "Medium", "exercise-welcome": "Practice your coding skills here. Your progress is saved automatically.",
-                "account-title": "Account & Settings", "acc-management": "Profile", "acc-logged-out": "Status: Disconnected (Local Progress)",
-                "acc-logged-in": "Status: Connected! Syncing cloud progress... Your lessons won't be lost.",
-                "btn-login": "Login", "btn-register": "Create an Account", "settings-title": "Preferences",
-                "btn-theme": "Change Screen Color", "settings-lang-label": "Change Application Language:"
-            },
-            "en-ca": {
-                "nav-learn": "Learn (CA)", "nav-exercise": "Exercise", "nav-account": "Account",
-                "learn-title": "Learning Center", "diff-easy": "Easy", "learn-welcome": "Welcome to your Canadian English lesson.",
-                "exercise-title": "Exercises", "diff-medium": "Medium", "exercise-welcome": "Practice your coding skills.",
-                "account-title": "Account", "acc-management": "Profile", "acc-logged-out": "Status: Disconnected",
-                "acc-logged-in": "Status: Connected!", "btn-login": "Sign In", "btn-register": "Register", 
-                "settings-title": "Preferences", "btn-theme": "Toggle Theme", "settings-lang-label": "Language:"
-            },
-            "fr-fr": {
-                "nav-learn": "Apprendre", "nav-exercise": "Exercice", "nav-account": "Compte",
-                "learn-title": "Centre d'Apprentissage", "diff-easy": "Facile", "learn-welcome": "Bienvenue dans votre leçon. Sélectionnez un langage de code en haut.",
-                "exercise-title": "Exercices d'Entraînement", "diff-medium": "Moyen", "exercise-welcome": "Entraînez-vous ici. Votre progression est sauvegardée automatiquement.",
-                "account-title": "Compte & Réglages", "acc-management": "Profil", "acc-logged-out": "Statut : Déconnecté (Progression Locale)",
-                "acc-logged-in": "Statut : Connecté ! Synchronisation cloud active... Rien ne sera effacé.",
-                "btn-login": "Se connecter", "btn-register": "Créer un compte", "settings-title": "Préférences",
-                "btn-theme": "Changer la couleur d'écran", "settings-lang-label": "Changer la langue de l'application :"
-            },
-            "fr-ca": {
-                "nav-learn": "Apprendre (Canada)", "nav-exercise": "Exercice", "nav-account": "Compte",
-                "learn-title": "Centre d'Apprentissage", "diff-easy": "Facile", "learn-welcome": "Bienvenue dans votre leçon (Canada).",
-                "exercise-title": "Exercices", "diff-medium": "Moyen", "exercise-welcome": "Pratiquez le code ici.",
-                "account-title": "Compte", "acc-management": "Profil", "acc-logged-out": "Statut : Déconnecté",
-                "acc-logged-in": "Statut : Connected !", "btn-login": "Connexion", "btn-register": "Créer un compte",
-                "settings-title": "Préférences", "btn-theme": "Couleur Écran", "settings-lang-label": "Langue :"
-            },
-            "es": {
-                "nav-learn": "Aprender", "nav-exercise": "Ejercicio", "nav-account": "Cuenta",
-                "learn-title": "Centro de Aprendizaje", "diff-easy": "Fácil", "learn-welcome": "Bienvenido a tu lección.",
-                "exercise-title": "Ejercicios", "diff-medium": "Medio", "exercise-welcome": "Practica tus habilidades aquí.",
-                "account-title": "Cuenta y Ajustes", "acc-management": "Perfil", "acc-logged-out": "Estado: Desconectado",
-                "acc-logged-in": "Estado: ¡Conectado!", "btn-login": "Iniciar sesión", "btn-register": "Crear cuenta",
-                "settings-title": "Preferencias", "btn-theme": "Cambiar color de pantalla", "settings-lang-label": "Cambiar idioma:"
-            },
-            "de": {
-                "nav-learn": "Lernen", "nav-exercise": "Übung", "nav-account": "Konto",
-                "learn-title": "Lernzentrum", "diff-easy": "Einfach", "learn-welcome": "Willkommen bei Ihrer Lektion.",
-                "exercise-title": "Übungen", "diff-medium": "Mittel", "exercise-welcome": "Üben Sie hier Ihre Programmierkenntnisse.",
-                "account-title": "Konto & Einstellungen", "acc-management": "Profil", "acc-logged-out": "Status: Abgemeldet",
-                "acc-logged-in": "Status: Verbunden!", "btn-login": "Einloggen", "btn-register": "Konto erstellen",
-                "settings-title": "Präferenzen", "btn-theme": "Bildschirmfarbe ändern", "settings-lang-label": "Sprache ändern:"
-            }
-        };
-
-        let savedLessonsData = {
-            java: { learn: "", exercise: "" },
-            javascript: { learn: "", exercise: "" },
-            python: { learn: "", exercise: "" },
-            html: { learn: "", exercise: "" }
-        };
-        
-        let currentCodeLang = 'java';
-
-        window.addEventListener('DOMContentLoaded', () => {
-            applyLanguage('en'); // Tout commence en Anglais par défaut
-
-            // CORRIGÉ : Après 2,5 secondes, l'écran de bienvenue s'efface complètement pour laisser place à la suite
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    checkFirstTimeVisit();
-                }, 500);
-            }, 2500);
-        });
-
-        function checkFirstTimeVisit() {
-            const savedLang = localStorage.getItem('app_lang');
-            if (!savedLang) {
-                document.getElementById('lang-modal').style.display = 'flex';
-            } else {
-                applyLanguage(savedLang);
-                document.getElementById('settings-lang-select').value = savedLang;
-            }
+        /* Rectangle Vert IA à gauche */
+        .ia-question-box {
+            width: 280px;
+            background-color: var(--ia-green);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        function saveInitialLanguage() {
-            const selectedLang = document.getElementById('global-lang-select').value;
-            localStorage.setItem('app_lang', selectedLang);
-            applyLanguage(selectedLang);
-            document.getElementById('settings-lang-select').value = selectedLang;
-            document.getElementById('lang-modal').style.display = 'none';
+        .ia-question-box h3 {
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 8px;
         }
 
-        function changeAppLanguage(langCode) {
-            localStorage.setItem('app_lang', langCode);
-            applyLanguage(langCode);
+        .ia-question-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 500;
         }
 
-        function applyLanguage(lang) {
-            const dict = translations[lang] || translations['en'];
-            document.querySelectorAll('[data-text]').forEach(element => {
-                const key = element.getAttribute('data-text');
-                if (dict[key]) {
-                    element.innerText = dict[key];
-                }
-            });
+        .editor-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            document.querySelectorAll(`.nav-btn[onclick="switchPage('${pageId}')"]`).forEach(btn => {
-                btn.classList.add('active');
-            });
-        }
-
-        function changeCodeLanguage(newLang) {
-            savedLessonsData[currentCodeLang].learn = document.getElementById('learn-notes').value;
-            savedLessonsData[currentCodeLang].exercise = document.getElementById('exercise-input').value;
-            currentCodeLang = newLang;
-            document.getElementById('learn-notes').value = savedLessonsData[currentCodeLang].learn;
-            document.getElementById('exercise-input').value = savedLessonsData[currentCodeLang].exercise;
-        }
-
-        document.getElementById('learn-notes').addEventListener('input', (e) => {
-            savedLessonsData[currentCodeLang].learn = e.target.value;
-        });
-        document.getElementById('exercise-input').addEventListener('input', (e) => {
-            savedLessonsData[currentCodeLang].exercise = e.target.value;
-        });
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-        }
-
-        function simulatedLogin() {
-            const currentLang = localStorage.getItem('app_lang') || 'en';
-            document.getElementById('account-status').innerText = translations[currentLang]['acc-logged-in'] || translations['en']['acc-logged-in'];
-            alert("Connexion réussie !");
-        }
-
-        function simulatedRegister() {
-            alert("Compte créé avec succès !");
-            simulatedLogin();
-        }
-    </script>
-</body>
-</html>
+        textarea.code-editor {
+            width: 100%;
+            flex: 1;
+            background-color: #11111b;
+            color: #a6e3a1;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            padding: 15px;
+            border: 1px solid #45475a;
+            border-radius: 8px;
+            resize: none;
+            margin-bottom: 60px;

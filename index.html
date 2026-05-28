@@ -1,160 +1,551 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon App de Code</title>
+    <title>app pour code</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            text-align: center;
+        /* --- CONFIGURATION GLOBALE & THÈME SOMBRE PAR DÉFAUT --- */
+        :root {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --sidebar-bg: #1e1e1e;
+            --accent-color: #007bff;
+            --border-color: #333333;
+        }
+
+        /* Thème clair si activé */
+        .light-theme {
+            --bg-color: #ffffff;
+            --text-color: #121212;
+            --sidebar-bg: #f4f4f4;
+            --accent-color: #0056b3;
+            --border-color: #cccccc;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #1e1e1e;
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* --- 1. ÉCRAN D'ANIMATION DE BIENVENUE (SPLASH SCREEN) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #splash-screen h1 {
+            font-size: 2.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        #splash-screen .credits {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        /* --- 2. POPUP SÉLECTION DE LA LANGUE (1ÈRE FOIS) --- */
+        #lang-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+
+        .modal-content {
+            background: var(--sidebar-bg);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid var(--border-color);
         }
-        h1 { color: #ff4757; }
-        button {
-            background-color: #ff4757;
+
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background: var(--accent-color);
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px;
-            transition: 0.2s;
-        }
-        button:hover { background-color: #e84118; }
-        .hidden { display: none; }
-        
-        /* Style du jeu */
-        #zone-jeu {
-            width: 100%;
-            height: 300px;
-            background-color: #2f3542;
-            position: relative;
-            border-radius: 8px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-        #cible {
-            width: 40px;
-            height: 40px;
-            background-color: #ff4757;
-            border-radius: 50%;
-            position: absolute;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        /* Style de la partie Apprendre */
-        .carte-langage {
-            background: #2f3542;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            text-align: left;
+        /* --- 3. ARCHITECTURE DE L'APPLICATION --- */
+        #app-container {
+            display: flex;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
         }
-        .badge {
-            background: #ff4757;
-            padding: 4px 8px;
+
+        /* En-tête avec les options de langage de code (3 points) */
+        header {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+        }
+
+        .code-lang-selector {
+            background: var(--sidebar-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
             border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Zone de contenu principal */
+        main {
+            flex: 1;
+            padding: 40px 20px 20px 20px;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Barre latérale (PC / Ordinateur) */
+        nav {
+            background-color: var(--sidebar-bg);
+            border-right: 2px solid var(--border-color);
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        nav button.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* --- Barre de navigation basse (Téléphone) --- */
+        .bottom-nav {
+            display: none;
+            background-color: var(--sidebar-bg);
+            border-top: 2px solid var(--border-color);
+            height: 60px;
+        }
+
+        .bottom-nav button {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .bottom-nav button.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* --- 4. STYLE DES CONTENUS (Apprendre / Exercice / Compte) --- */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .difficulty-indicator {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .bar {
+            width: 6px;
+            height: 18px;
+            background: #444;
+            border-radius: 2px;
+        }
+
+        /* Couleurs des barres de difficulté */
+        .easy .bar:nth-child(1) { background: #28a745; }
+        .medium .bar:nth-child(1), .medium .bar:nth-child(2) { background: #ffc107; }
+        .hard .bar:nth-child(1), .hard .bar:nth-child(2), .hard .bar:nth-child(3) { background: #dc3545; }
+
+        /* Formulaires de compte et boutons de réglages */
+        .account-box, .settings-box {
+            background: var(--sidebar-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        /* --- RESPONSIVE DESIGN (Téléphone vs PC) --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            #app-container {
+                flex-direction: column;
+            }
+            nav {
+                display: none; /* Cache la barre gauche sur téléphone */
+            }
+            .bottom-nav {
+                display: flex; /* Affiche la barre basse sur téléphone */
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="ecran-accueil">
-        <h1>Bienvenue dans ton App !</h1>
-        <p>Que veux-tu faire aujourd'hui ?</p>
-        <button onclick="ouvrirEntrainement()">🎯 S'entraîner (Jeu)</button>
-        <button onclick="ouvrirApprendre()">📚 Apprendre le Code</button>
+    <div id="splash-screen">
+        <h1>app pour script</h1>
+        <div class="credits">creat by Ya28ine</div>
     </div>
 
-    <div id="ecran-jeu" class="hidden">
-        <h1>Attrape la cible !</h1>
-        <p>Score : <span id="score">0</span></p>
-        <div id="zone-jeu">
-            <div id="cible" onclick="toucherCible()"></div>
+    <div id="lang-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Select Language / Choisir la langue</h3>
+            <select id="global-lang-select">
+                <option value="en">English (USA)</option>
+                <option value="en-ca">English (Canada)</option>
+                <option value="fr-fr">Français (France)</option>
+                <option value="fr-ca">Français (Canada)</option>
+                <option value="es">Español</option>
+                <option value="de">Deutsch</option>
+            </select>
+            <button id="confirm-lang-btn" onclick="saveInitialLanguage()">OK</button>
         </div>
-        <br>
-        <button onclick="retourAccueil()">⬅️ Retour</button>
     </div>
 
-    <div id="ecran-apprendre" class="hidden">
-        <h1>Apprendre les Langages</h1>
-        <p>Découvre la différence entre Java et JavaScript :</p>
+    <div id="app-container">
         
-        <div class="carte-langage">
-            <h3><span class="badge">Java</span></h3>
-            <p><strong>C'est quoi ?</strong> Un langage très puissant utilisé pour créer des applications de téléphone (Android), des logiciels d'ordinateur et de grands systèmes de serveurs.</p>
-            <p><em>Exemple : Le jeu Minecraft original a été entièrement codé en Java !</em></p>
+        <header id="code-header">
+            <select class="code-lang-selector" onchange="changeCodeLanguage(this.value)" id="code-select">
+                <option value="java">Java</option>
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML/CSS</option>
+            </select>
+        </header>
+
+        <nav id="pc-nav">
+            <button class="nav-btn active" onclick="switchPage('learn')" data-text="nav-learn">Learn</button>
+            <button class="nav-btn" onclick="switchPage('exercise')" data-text="nav-exercise">Exercise</button>
+            <button class="nav-btn" onclick="switchPage('account')" data-text="nav-account">Account</button>
+        </nav>
+
+        <main>
+            <div id="page-learn" class="page active">
+                <div class="header-section">
+                    <h2 data-text="learn-title">Learning Center</h2>
+                    <div class="difficulty-indicator easy">
+                        <span data-text="diff-easy">Easy</span>
+                        <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                    </div>
+                </div>
+                <div id="learn-content">
+                    <p data-text="learn-welcome">Welcome to your lesson. Select a code language above to begin.</p>
+                    <textarea id="learn-notes" style="width:100%; height:150px; margin-top:15px; background:var(--sidebar-bg); color:var(--text-color); padding:10px;" placeholder="Vos notes de cours ici..."></textarea>
+                </div>
+            </div>
+
+            <div id="page-exercise" class="page">
+                <div class="header-section">
+                    <h2 data-text="exercise-title">Training Exercises</h2>
+                    <div class="difficulty-indicator medium">
+                        <span data-text="diff-medium">Medium</span>
+                        <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                    </div>
+                </div>
+                <div id="exercise-content">
+                    <p data-text="exercise-welcome">Practice your coding skills here. Your progress is saved automatically.</p>
+                    <textarea id="exercise-input" style="width:100%; height:150px; margin-top:15px; background:var(--sidebar-bg); color:var(--text-color); padding:10px;" placeholder="Écrivez votre code d'exercice ici..."></textarea>
+                </div>
+            </div>
+
+            <div id="page-account" class="page">
+                <h2 data-text="account-title" style="margin-bottom: 20px;">Account & Settings</h2>
+                
+                <div class="account-box">
+                    <h3 data-text="acc-management">Profile</h3>
+                    <p id="account-status" data-text="acc-logged-out">Status: Disconnected (Local Progress Only)</p>
+                    <button class="btn" onclick="simulatedLogin()" data-text="btn-login">Login</button>
+                    <button class="btn btn-secondary" onclick="simulatedRegister()" data-text="btn-register">Register</button>
+                </div>
+
+                <div class="settings-box">
+                    <h3 data-text="settings-title">Preferences</h3>
+                    
+                    <button class="btn" onclick="toggleTheme()" data-text="btn-theme">Screen Color: Black/White</button>
+                    
+                    <div style="margin-top: 15px;">
+                        <label data-text="settings-lang-label" style="display:block; margin-bottom:5px;">Change Application Language :</label>
+                        <select id="settings-lang-select" onchange="changeAppLanguage(this.value)" style="padding: 5px; background: var(--bg-color); color:var(--text-color);">
+                            <option value="en">English (USA)</option>
+                            <option value="en-ca">English (Canada)</option>
+                            <option value="fr-fr">Français (France)</option>
+                            <option value="fr-ca">Français (Canada)</option>
+                            <option value="es">Español</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="bottom-nav" id="mobile-nav">
+            <button class="nav-btn active" onclick="switchPage('learn')" data-text="nav-learn">Learn</button>
+            <button class="nav-btn" onclick="switchPage('exercise')" data-text="nav-exercise">Exercise</button>
+            <button class="nav-btn" onclick="switchPage('account')" data-text="nav-account">Account</button>
         </div>
 
-        <div class="carte-langage">
-            <h3><span class="badge">JavaScript</span></h3>
-            <p><strong>C'est quoi ?</strong> Le langage du web. Il sert à rendre les pages internet vivantes et interactives (comme les boutons sur lesquels tu cliques ou ce jeu !).</p>
-            <p><em>Exemple : C'est le langage qu'on utilise en ce moment même pour faire bouger la cible rouge.</em></p>
-        </div>
-
-        <button onclick="retourAccueil()">⬅️ Retour</button>
     </div>
-</div>
 
-<script>
-    let score = 0;
-    const cible = document.getElementById('cible');
-    const zoneJeu = document.getElementById('zone-jeu');
+    <script>
+        // Dictionnaire des traductions (Toutes les langues configurées)
+        const translations = {
+            "en": {
+                "nav-learn": "Learn", "nav-exercise": "Exercise", "nav-account": "Account",
+                "learn-title": "Learning Center", "diff-easy": "Easy", "learn-welcome": "Welcome to your lesson. Select a code language above to begin.",
+                "exercise-title": "Training Exercises", "diff-medium": "Medium", "exercise-welcome": "Practice your coding skills here. Your progress is saved automatically.",
+                "account-title": "Account & Settings", "acc-management": "Profile", "acc-logged-out": "Status: Disconnected (Local Progress)",
+                "acc-logged-in": "Status: Connected! Syncing cloud progress... Your lessons won't be lost.",
+                "btn-login": "Login", "btn-register": "Create an Account", "settings-title": "Preferences",
+                "btn-theme": "Change Screen Color", "settings-lang-label": "Change Application Language:"
+            },
+            "en-ca": {
+                "nav-learn": "Learn (CA)", "nav-exercise": "Exercise", "nav-account": "Account",
+                "learn-title": "Learning Center", "diff-easy": "Easy", "learn-welcome": "Welcome to your Canadian English lesson.",
+                "exercise-title": "Exercises", "diff-medium": "Medium", "exercise-welcome": "Practice your coding skills.",
+                "account-title": "Account", "acc-management": "Profile", "acc-logged-out": "Status: Disconnected",
+                "acc-logged-in": "Status: Connected!", "btn-login": "Sign In", "btn-register": "Register", 
+                "settings-title": "Preferences", "btn-theme": "Toggle Theme", "settings-lang-label": "Language:"
+            },
+            "fr-fr": {
+                "nav-learn": "Apprendre", "nav-exercise": "Exercice", "nav-account": "Compte",
+                "learn-title": "Centre d'Apprentissage", "diff-easy": "Facile", "learn-welcome": "Bienvenue dans votre leçon. Sélectionnez un langage de code en haut.",
+                "exercise-title": "Exercices d'Entraînement", "diff-medium": "Moyen", "exercise-welcome": "Entraînez-vous ici. Votre progression est sauvegardée automatiquement.",
+                "account-title": "Compte & Réglages", "acc-management": "Profil", "acc-logged-out": "Statut : Déconnecté (Progression Locale)",
+                "acc-logged-in": "Statut : Connecté ! Synchronisation cloud active... Rien ne sera effacé.",
+                "btn-login": "Se connecter", "btn-register": "Créer un compte", "settings-title": "Préférences",
+                "btn-theme": "Changer la couleur d'écran", "settings-lang-label": "Changer la langue de l'application :"
+            },
+            "fr-ca": {
+                "nav-learn": "Apprendre (Canada)", "nav-exercise": "Exercice", "nav-account": "Compte",
+                "learn-title": "Centre d'Apprentissage", "diff-easy": "Facile", "learn-welcome": "Bienvenue dans votre leçon (Canada).",
+                "exercise-title": "Exercices", "diff-medium": "Moyen", "exercise-welcome": "Pratiquez le code ici.",
+                "account-title": "Compte", "acc-management": "Profil", "acc-logged-out": "Statut : Déconnecté",
+                "acc-logged-in": "Statut : Connecté !", "btn-login": "Connexion", "btn-register": "Créer un compte",
+                "settings-title": "Préférences", "btn-theme": "Couleur Écran", "settings-lang-label": "Langue :"
+            },
+            "es": {
+                "nav-learn": "Aprender", "nav-exercise": "Ejercicio", "nav-account": "Cuenta",
+                "learn-title": "Centro de Aprendizaje", "diff-easy": "Fácil", "learn-welcome": "Bienvenido a tu lección.",
+                "exercise-title": "Ejercicios", "diff-medium": "Medio", "exercise-welcome": "Practica tus habilidades aquí.",
+                "account-title": "Cuenta y Ajustes", "acc-management": "Perfil", "acc-logged-out": "Estado: Desconectado",
+                "acc-logged-in": "Estado: ¡Conectado!", "btn-login": "Iniciar sesión", "btn-register": "Crear cuenta",
+                "settings-title": "Preferencias", "btn-theme": "Cambiar color de pantalla", "settings-lang-label": "Cambiar idioma:"
+            },
+            "de": {
+                "nav-learn": "Lernen", "nav-exercise": "Übung", "nav-account": "Konto",
+                "learn-title": "Lernzentrum", "diff-easy": "Einfach", "learn-welcome": "Willkommen bei Ihrer Lektion.",
+                "exercise-title": "Übungen", "diff-medium": "Mittel", "exercise-welcome": "Üben Sie hier Ihre Programmierkenntnisse.",
+                "account-title": "Konto & Einstellungen", "acc-management": "Profil", "acc-logged-out": "Status: Abgemeldet",
+                "acc-logged-in": "Status: Verbunden!", "btn-login": "Einloggen", "btn-register": "Konto erstellen",
+                "settings-title": "Präferenzen", "btn-theme": "Bildschirmfarbe ändern", "settings-lang-label": "Sprache ändern:"
+            }
+        };
 
-    function ouvrirEntrainement() {
-        changerEcran('ecran-jeu');
-        bougerCible();
-    }
-
-    function ouvrirApprendre() {
-        changerEcran('ecran-apprendre');
-    }
-
-    function retourAccueil() {
-        changerEcran('ecran-accueil');
-    }
-
-    function changerEcran(idEcran) {
-        document.getElementById('ecran-accueil').classList.add('hidden');
-        document.getElementById('ecran-jeu').classList.add('hidden');
-        document.getElementById('ecran-apprendre').classList.add('hidden');
+        // Mémoire de session pour stocker le code tapé par langage (Évite la perte de données en switchant Java/JS)
+        let savedLessonsData = {
+            java: { learn: "", exercise: "" },
+            javascript: { learn: "", exercise: "" },
+            python: { learn: "", exercise: "" },
+            html: { learn: "", exercise: "" }
+        };
         
-        document.getElementById(idEcran).classList.remove('hidden');
-    }
+        let currentCodeLang = 'java';
 
-    function bougerCible() {
-        const maxX = zoneJeu.clientWidth - 40;
-        const maxY = zoneJeu.clientHeight - 40;
-        
-        const randomX = Math.floor(Math.random() * maxX);
-        const randomY = Math.floor(Math.random() * maxY);
-        
-        cible.style.left = randomX + 'px';
-        cible.style.top = randomY + 'px';
-    }
+        // --- GESTION DU CHARGEMENT (SPLASH SCREEN & LANGUE) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Tout commence en anglais par défaut (comme demandé)
+            applyLanguage('en');
 
-    function toucherCible() {
-        score++;
-        document.getElementById('score').innerText = score;
-        bougerCible();
-    }
-</script>
+            // Animation d'ouverture : Disparaît après 2,5 secondes
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    checkFirstTimeVisit();
+                }, 500);
+            }, 2500);
+        });
 
-</body>
-</html>
+        function checkFirstTimeVisit() {
+            // Vérifie dans la mémoire du navigateur (localStorage) si la langue a déjà été choisie une fois
+            const savedLang = localStorage.getItem('app_lang');
+            if (!savedLang) {
+                // Première fois : on affiche la popup de sélection
+                document.getElementById('lang-modal').style.display = 'flex';
+            } else {
+                // Déjà venu : on applique sa langue sauvegardée
+                applyLanguage(savedLang);
+                document.getElementById('settings-lang-select').value = savedLang;
+            }
+        }
+
+        function saveInitialLanguage() {
+            const selectedLang = document.getElementById('global-lang-select').value;
+            localStorage.setItem('app_lang', selectedLang);
+            applyLanguage(selectedLang);
+            document.getElementById('settings-lang-select').value = selectedLang;
+            document.getElementById('lang-modal').style.display = 'none';
+        }
+
+        // --- CHANGER LA LANGUE DE L'APPLICATION ---
+        function changeAppLanguage(langCode) {
+            localStorage.setItem('app_lang', langCode);
+            applyLanguage(langCode);
+        }
+
+        function applyLanguage(lang) {
+            const dict = translations[lang] || translations['en'];
+            document.querySelectorAll('[data-text]').forEach(element => {
+                const key = element.getAttribute('data-text');
+                if (dict[key]) {
+                    element.innerText = dict[key];
+                }
+            });
+        }
+
+        // --- CHANGER DE PAGE (ONGLETS) ---
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            
+            // Active le bouton correspondant sur le menu PC ET Mobile
+            document.querySelectorAll(`.nav-btn[onclick="switchPage('${pageId}')"]`).forEach(btn => {
+                btn.classList.add('active');
+            });
+        }
+
+        // --- GESTION DES LANGAGES DE CODE (JAVA, JS...) SANS PERTE DE DONNÉES ---
+        function changeCodeLanguage(newLang) {
+            // 1. Sauvegarder ce que l'utilisateur a écrit pour le langage actuel
+            savedLessonsData[currentCodeLang].learn = document.getElementById('learn-notes').value;
+            savedLessonsData[currentCodeLang].exercise = document.getElementById('exercise-input').value;
+
+            // 2. Changer de langage actif
+            currentCodeLang = newLang;
+
+            // 3. Charger le contenu précédemment sauvegardé pour le nouveau langage (Sert à ce que rien ne disparaisse)
+            document.getElementById('learn-notes').value = savedLessonsData[currentCodeLang].learn;
+            document.getElementById('exercise-input').value = savedLessonsData[currentCodeLang].exercise;
+            
+            console.log("Changement vers le langage de code : " + newLang + ". Données préservées.");
+        }
+
+        // Autoguarde en temps réel quand l'utilisateur écrit
+        document.getElementById('learn-notes').addEventListener('input', (e) => {
+            savedLessonsData[currentCodeLang].learn = e.target.value;
+        });
+        document.getElementById('exercise-input').addEventListener('input', (e) => {
+            savedLessonsData[currentCodeLang].exercise = e.target.value;
+        });
+
+
+        // --- THÈME COULEUR D'ÉCRAN (NOIR / BLANC) ---
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            // Commençant par noir (configuré dans le CSS de base), ce bouton bascule sur le blanc et inversement.
+        }
+
+        // --- SIMULATION DU COMPTE ET SAUVEGARDE EN CAS DE CHANGEMENT DE TÉLÉPHONE ---
+        function simulatedLogin() {
+            const currentLang = localStorage.getItem('app_lang') || 'en';
+            document.getElementById('account-status').innerText = translations[currentLang]['acc-logged-in'] || translations['en']['acc-logged-in'];
+            alert("Connexion réussie ! Vos exercices et leçons en cours sont synchronisés et sécurisés.");
+        }
+
+        function simulatedRegister() {

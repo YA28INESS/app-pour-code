@@ -51,12 +51,13 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
 
         #splash-screen h1 {
             font-size: 2.5rem;
-            animation: pulse 1.5s infinite;
+            /* L'animation fait une simple apparition progressive maintenant */
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         #splash-screen .credits {
@@ -66,10 +67,9 @@
             opacity: 0.7;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            50% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.7; }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         /* --- 2. POPUP SÉLECTION DE LA LANGUE (1ÈRE FOIS) --- */
@@ -119,7 +119,7 @@
             overflow: hidden;
         }
 
-        /* En-tête avec les options de langage de code (3 points) */
+        /* En-tête avec les options de langage de code */
         header {
             position: absolute;
             top: 15px;
@@ -227,12 +227,10 @@
             border-radius: 2px;
         }
 
-        /* Couleurs des barres de difficulté */
         .easy .bar:nth-child(1) { background: #28a745; }
         .medium .bar:nth-child(1), .medium .bar:nth-child(2) { background: #ffc107; }
         .hard .bar:nth-child(1), .hard .bar:nth-child(2), .hard .bar:nth-child(3) { background: #dc3545; }
 
-        /* Formulaires de compte et boutons de réglages */
         .account-box, .settings-box {
             background: var(--sidebar-bg);
             padding: 20px;
@@ -256,28 +254,18 @@
             background: #6c757d;
         }
 
-        /* --- RESPONSIVE DESIGN (Téléphone vs PC) --- */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            #app-container {
-                flex-direction: column;
-            }
-            nav {
-                display: none; /* Cache la barre gauche sur téléphone */
-            }
-            .bottom-nav {
-                display: flex; /* Affiche la barre basse sur téléphone */
-            }
+            body { flex-direction: column; }
+            #app-container { flex-direction: column; }
+            nav { display: none; }
+            .bottom-nav { display: flex; }
         }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <h1>app pour script</h1>
-        <div class="credits">creat by Ya28ine</div>
+        <h1>app pour code</h1> <div class="credits">creat by Ya28ine</div>
     </div>
 
     <div id="lang-modal">
@@ -353,7 +341,6 @@
 
                 <div class="settings-box">
                     <h3 data-text="settings-title">Preferences</h3>
-                    
                     <button class="btn" onclick="toggleTheme()" data-text="btn-theme">Screen Color: Black/White</button>
                     
                     <div style="margin-top: 15px;">
@@ -380,7 +367,6 @@
     </div>
 
     <script>
-        // Dictionnaire des traductions (Toutes les langues configurées)
         const translations = {
             "en": {
                 "nav-learn": "Learn", "nav-exercise": "Exercise", "nav-account": "Account",
@@ -413,7 +399,7 @@
                 "learn-title": "Centre d'Apprentissage", "diff-easy": "Facile", "learn-welcome": "Bienvenue dans votre leçon (Canada).",
                 "exercise-title": "Exercices", "diff-medium": "Moyen", "exercise-welcome": "Pratiquez le code ici.",
                 "account-title": "Compte", "acc-management": "Profil", "acc-logged-out": "Statut : Déconnecté",
-                "acc-logged-in": "Statut : Connecté !", "btn-login": "Connexion", "btn-register": "Créer un compte",
+                "acc-logged-in": "Statut : Connected !", "btn-login": "Connexion", "btn-register": "Créer un compte",
                 "settings-title": "Préférences", "btn-theme": "Couleur Écran", "settings-lang-label": "Langue :"
             },
             "es": {
@@ -434,7 +420,6 @@
             }
         };
 
-        // Mémoire de session pour stocker le code tapé par langage (Évite la perte de données en switchant Java/JS)
         let savedLessonsData = {
             java: { learn: "", exercise: "" },
             javascript: { learn: "", exercise: "" },
@@ -444,12 +429,10 @@
         
         let currentCodeLang = 'java';
 
-        // --- GESTION DU CHARGEMENT (SPLASH SCREEN & LANGUE) ---
         window.addEventListener('DOMContentLoaded', () => {
-            // Tout commence en anglais par défaut (comme demandé)
-            applyLanguage('en');
+            applyLanguage('en'); // Tout commence en Anglais par défaut
 
-            // Animation d'ouverture : Disparaît après 2,5 secondes
+            // CORRIGÉ : Après 2,5 secondes, l'écran de bienvenue s'efface complètement pour laisser place à la suite
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
@@ -461,13 +444,10 @@
         });
 
         function checkFirstTimeVisit() {
-            // Vérifie dans la mémoire du navigateur (localStorage) si la langue a déjà été choisie une fois
             const savedLang = localStorage.getItem('app_lang');
             if (!savedLang) {
-                // Première fois : on affiche la popup de sélection
                 document.getElementById('lang-modal').style.display = 'flex';
             } else {
-                // Déjà venu : on applique sa langue sauvegardée
                 applyLanguage(savedLang);
                 document.getElementById('settings-lang-select').value = savedLang;
             }
@@ -481,7 +461,6 @@
             document.getElementById('lang-modal').style.display = 'none';
         }
 
-        // --- CHANGER LA LANGUE DE L'APPLICATION ---
         function changeAppLanguage(langCode) {
             localStorage.setItem('app_lang', langCode);
             applyLanguage(langCode);
@@ -497,36 +476,23 @@
             });
         }
 
-        // --- CHANGER DE PAGE (ONGLETS) ---
         function switchPage(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
             document.getElementById(`page-${pageId}`).classList.add('active');
-            
-            // Active le bouton correspondant sur le menu PC ET Mobile
             document.querySelectorAll(`.nav-btn[onclick="switchPage('${pageId}')"]`).forEach(btn => {
                 btn.classList.add('active');
             });
         }
 
-        // --- GESTION DES LANGAGES DE CODE (JAVA, JS...) SANS PERTE DE DONNÉES ---
         function changeCodeLanguage(newLang) {
-            // 1. Sauvegarder ce que l'utilisateur a écrit pour le langage actuel
             savedLessonsData[currentCodeLang].learn = document.getElementById('learn-notes').value;
             savedLessonsData[currentCodeLang].exercise = document.getElementById('exercise-input').value;
-
-            // 2. Changer de langage actif
             currentCodeLang = newLang;
-
-            // 3. Charger le contenu précédemment sauvegardé pour le nouveau langage (Sert à ce que rien ne disparaisse)
             document.getElementById('learn-notes').value = savedLessonsData[currentCodeLang].learn;
             document.getElementById('exercise-input').value = savedLessonsData[currentCodeLang].exercise;
-            
-            console.log("Changement vers le langage de code : " + newLang + ". Données préservées.");
         }
 
-        // Autoguarde en temps réel quand l'utilisateur écrit
         document.getElementById('learn-notes').addEventListener('input', (e) => {
             savedLessonsData[currentCodeLang].learn = e.target.value;
         });
@@ -534,18 +500,20 @@
             savedLessonsData[currentCodeLang].exercise = e.target.value;
         });
 
-
-        // --- THÈME COULEUR D'ÉCRAN (NOIR / BLANC) ---
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
-            // Commençant par noir (configuré dans le CSS de base), ce bouton bascule sur le blanc et inversement.
         }
 
-        // --- SIMULATION DU COMPTE ET SAUVEGARDE EN CAS DE CHANGEMENT DE TÉLÉPHONE ---
         function simulatedLogin() {
             const currentLang = localStorage.getItem('app_lang') || 'en';
             document.getElementById('account-status').innerText = translations[currentLang]['acc-logged-in'] || translations['en']['acc-logged-in'];
-            alert("Connexion réussie ! Vos exercices et leçons en cours sont synchronisés et sécurisés.");
+            alert("Connexion réussie !");
         }
 
         function simulatedRegister() {
+            alert("Compte créé avec succès !");
+            simulatedLogin();
+        }
+    </script>
+</body>
+</html>

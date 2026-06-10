@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application d'Apprentissage Code avec IA</title>
+    <title>École de Programmation Interactive IA</title>
     <style>
         :root {
             --bg-color: #1e1e2e;
@@ -15,6 +15,7 @@
             --card-bg: #313244;
             --input-bg: #45475a;
             --ia-green: #23a950;
+            --render-orange: #e67e22;
         }
 
         * {
@@ -88,9 +89,25 @@
             flex-direction: column;
         }
 
-        h1 {
+        .title-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+        }
+
+        h1 {
             font-size: 2rem;
+        }
+
+        /* Badge Chapitre */
+        .chapter-badge {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
         }
 
         /* --- Onglet COMPTE --- */
@@ -197,44 +214,89 @@
             cursor: pointer;
             margin: 40px auto;
             display: block;
-            transition: transform 0.2s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .learn-intro-btn:hover {
-            transform: scale(1.03);
-            opacity: 0.9;
         }
 
         .lesson-box {
             display: none;
             background-color: var(--card-bg);
-            padding: 30px;
+            padding: 35px;
             border-radius: 12px;
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .ia-badge {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 15px;
+            position: relative;
         }
 
         .lesson-text {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             line-height: 1.6;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        .lesson-nav-layout {
+        /* Carré noir exemple */
+        .code-example-box {
+            background-color: #11111b;
+            color: #fab387;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            border: 1px solid #45475a;
+            white-space: pre-wrap;
+        }
+
+        .render-btn {
+            background-color: var(--render-orange);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        /* Zone d'affichage du rendu visuel */
+        .render-output-zone {
+            background-color: white;
+            color: black;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            min-height: 60px;
+            border: 2px dashed #cca;
+            display: none;
+        }
+
+        /* Animation spécifique pour l'exemple JS/CSS */
+        @keyframes slide {
+            from { margin-left: 0%; }
+            to { margin-left: 70%; }
+        }
+        .animated-box {
+            width: 50px;
+            height: 50px;
+            background-color: #e74c3c;
+            animation: slide 2s infinite alternate ease-in-out;
+        }
+
+        .lesson-footer-layout {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .page-counter {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            background-color: rgba(137, 180, 250, 0.1);
+            padding: 5px 12px;
+            border-radius: 6px;
         }
 
         .lesson-nav-btn {
@@ -249,6 +311,7 @@
         .lesson-nav-btn:disabled {
             background-color: #585b70;
             cursor: not-allowed;
+            color: #a6adc8;
         }
 
         /* --- Onglet EXERCICE --- */
@@ -262,7 +325,7 @@
 
         /* Rectangle Vert IA à gauche */
         .ia-question-box {
-            width: 280px;
+            width: 300px;
             background-color: var(--ia-green);
             color: white;
             padding: 20px;
@@ -303,7 +366,7 @@
             border: 1px solid #45475a;
             border-radius: 8px;
             resize: none;
-            margin-bottom: 60px;
+            margin-bottom: 75px;
         }
 
         /* Actions du bas */
@@ -334,16 +397,32 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 10px;
+            max-width: 450px;
+            width: 60%;
         }
 
         .feedback-box {
             background-color: var(--card-bg);
-            padding: 12px 20px;
+            padding: 15px;
             border-radius: 6px;
             border-left: 5px solid var(--accent-color);
             display: none;
-            max-width: 400px;
+            width: 100%;
             font-size: 0.95rem;
+        }
+
+        /* Bouton suivant vert interne */
+        .next-exercise-btn {
+            background-color: var(--ia-green);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
         }
 
         .correction-btn {
@@ -375,26 +454,23 @@
 
         <div id="compte" class="tab-content active">
             <h1>Gestion du Compte</h1>
-            
-            <div id="connectionBanner" class="status-banner status-disconnected">
-                Compte non connecté
-            </div>
+            <div id="connectionBanner" class="status-banner status-disconnected">Compte non connecté</div>
 
             <div class="auth-container">
                 <div class="auth-card">
                     <h3>Créer un compte</h3>
                     <form onsubmit="handleAuth(event, 'inscription')">
                         <div class="form-group">
-                            <label>Sauvegarder ma progression avec :</label>
+                            <label>Sauvegarder progression sur :</label>
                             <select required>
                                 <option value="google">Google</option>
-                                <option value="email">Adresse E-mail</option>
-                                <option value="telephone">Numéro de téléphone</option>
+                                <option value="email">E-mail</option>
+                                <option value="telephone">Téléphone</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Nom d'utilisateur :</label>
-                            <input type="text" placeholder="Ex: Lucas" required>
+                            <label>Nom :</label>
+                            <input type="text" placeholder="Ton nom" required>
                         </div>
                         <div class="form-group">
                             <label>Mot de passe :</label>
@@ -418,16 +494,16 @@
                     <h3>Se connecter</h3>
                     <form onsubmit="handleAuth(event, 'connexion')">
                         <div class="form-group">
-                            <label>Support de connexion :</label>
+                            <label>Support :</label>
                             <select required>
                                 <option value="google">Google</option>
-                                <option value="email">Adresse E-mail</option>
-                                <option value="telephone">Numéro de téléphone</option>
+                                <option value="email">E-mail</option>
+                                <option value="telephone">Téléphone</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Nom d'utilisateur :</label>
-                            <input type="text" placeholder="Ex: Lucas" required>
+                            <label>Nom :</label>
+                            <input type="text" placeholder="Ton nom" required>
                         </div>
                         <div class="form-group">
                             <label>Mot de passe :</label>
@@ -443,33 +519,44 @@
         </div>
 
         <div id="apprendre" class="tab-content">
-            <h1>Apprendre les bases</h1>
+            <div class="title-area">
+                <h1>Apprendre les bases</h1>
+                <div id="chapterBadgeLearn" class="chapter-badge">Chapitre 1 : HTML</div>
+            </div>
             
             <button id="startBtn" class="learn-intro-btn" onclick="startLearning()">Commencer l'exercice</button>
 
             <div id="lessonBox" class="lesson-box">
-                <div class="ia-badge">✨ Généré par l'IA d'apprentissage</div>
                 <div id="lessonText" class="lesson-text"></div>
-                <div class="lesson-nav-layout">
+                
+                <div id="codeExample" class="code-example-box"></div>
+                
+                <button class="render-btn" onclick="generateRender()">Générer le rendu</button>
+                
+                <div id="renderOutput" class="render-output-zone"></div>
+
+                <div class="lesson-footer-layout">
                     <button id="prevBtn" class="lesson-nav-btn" onclick="changeLesson(-1)">Précédent</button>
+                    <div id="pageCounter" class="page-counter">1</div>
                     <button id="nextBtn" class="lesson-nav-btn" onclick="changeLesson(1)">Suivant</button>
                 </div>
             </div>
         </div>
 
         <div id="exercice" class="tab-content">
-            <h1>Zone d'Exercice</h1>
+            <div class="title-area">
+                <h1>Zone d'Exercice</h1>
+                <div id="chapterBadgeExercise" class="chapter-badge">Chapitre 1 : HTML</div>
+            </div>
             
             <div class="exercise-layout">
                 <div id="iaQuestionBox" class="ia-question-box">
                     <h3>🤖 Exercice avec des questions</h3>
-                    <div id="iaQuestionText" class="ia-question-text">
-                        Génération de la question en cours...
-                    </div>
+                    <div id="iaQuestionText" class="ia-question-text">Étape 1 : Crée un titre principal complet.</div>
                 </div>
 
                 <div class="editor-side">
-                    <textarea id="codeEditor" class="code-editor" placeholder="Écrivez votre code HTML ici..."></textarea>
+                    <textarea id="codeEditor" class="code-editor" placeholder="Écris ton code ici..."></textarea>
                     
                     <div class="exercise-actions">
                         <button id="modeBtn" class="mode-toggle-btn" onclick="toggleExerciseMode()">Exercice libre</button>
@@ -486,16 +573,24 @@
     </div>
 
     <script>
-        // --- NAVIGATION ---
+        // --- ETAT GLOBAL DU JEU / PARCOURS ---
+        let currentChapter = 1; // 1 = HTML, 2 = CSS, 3 = JS
+        let isFreeMode = false;
+
+        function updateChapterBadges() {
+            const names = ["", "Chapitre 1 : HTML", "Chapitre 2 : CSS", "Chapitre 3 : JavaScript"];
+            document.getElementById('chapterBadgeLearn').innerText = names[currentChapter];
+            document.getElementById('chapterBadgeExercise').innerText = names[currentChapter];
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
-        // --- COMPTE ET SECURITE ---
+        // --- COMPTE ET ŒIL DE SÉCURITÉ ---
         function togglePassword(inputId, btn) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {
@@ -511,147 +606,20 @@
             event.preventDefault();
             const banner = document.getElementById('connectionBanner');
             if (type === 'inscription') {
-                const p1 = document.getElementById('regPassword').value;
-                const p2 = document.getElementById('regPasswordConfirm').value;
-                if (p1 !== p2) { return alert("Les mots de passe ne correspondent pas !"); }
+                if(document.getElementById('regPassword').value !== document.getElementById('regPasswordConfirm').value) {
+                    return alert("Les mots de passe ne concordent pas !");
+                }
             }
             banner.innerText = "Compte connecté";
             banner.className = "status-banner status-connected";
-            alert(type === 'inscription' ? "Compte créé et connecté !" : "Connexion réussie !");
+            alert("Opération validée avec succès !");
         }
 
-        // --- IA APPRENDRE ---
-        const iaLessons = [
-            "Salut ! Je suis ton assistant IA. Commençons doucement. Le HTML sert à fabriquer le squelette d'un site web, comme la structure en bois d'une cabane.",
-            "En HTML, on donne des ordres avec des mots entourés de flèches appelés des 'balises'. Presque toutes s'ouvrent au début et se ferment à la fin avec un slash (/).",
-            "Pour dire au site 'ceci est un très grand titre principal', l'IA utilise la balise &lt;h1&gt; au début et &lt;/h1&gt; à la fin de ta phrase.",
-            "Si tu veux simplement ajouter une phrase normale ou un paragraphe sous ton grand titre, entoure ton texte avec &lt;p&gt; et &lt;/p&gt;."
-        ];
-        let currentLessonIndex = 0;
-
-        function startLearning() {
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('lessonBox').style.display = 'block';
-            showLesson();
-        }
-
-        function showLesson() {
-            document.getElementById('lessonText').innerHTML = iaLessons[currentLessonIndex];
-            document.getElementById('prevBtn').disabled = (currentLessonIndex === 0);
-            document.getElementById('nextBtn').innerText = (currentLessonIndex === iaLessons.length - 1) ? "Terminer" : "Suivant";
-        }
-
-        function changeLesson(direction) {
-            currentLessonIndex += direction;
-            if (currentLessonIndex >= iaLessons.length) {
-                alert("Bravo, tu as vu toutes mes explications ! Passe à l'onglet Exercice pour que je te teste !");
-                currentLessonIndex = iaLessons.length - 1;
-            } else if (currentLessonIndex < 0) {
-                currentLessonIndex = 0;
-            }
-            showLesson();
-        }
-
-        // --- IA EXERCICES ET QUESTIONS ---
-        const iaQuestions = [
-            {
-                text: "Écris un titre numéro 1 contenant uniquement le mot 'Bienvenue'. N'oublie pas de bien fermer ta balise !",
-                tagRequired: "<h1>",
-                tagCloseRequired: "</h1>",
-                contentRequired: "Bienvenue"
-            },
-            {
-                text: "Parfait ! Maintenant, crée un paragraphe simple contenant le mot 'Bonjour' en utilisant la balise appropriée.",
-                tagRequired: "<p>",
-                tagCloseRequired: "</p>",
-                contentRequired: "Bonjour"
-            }
-        ];
-        let currentQuestionIndex = 0;
-        let isFreeMode = false;
-
-        function loadQuestion() {
-            const qText = document.getElementById('iaQuestionText');
-            if (isFreeMode) {
-                qText.innerHTML = "Tu es en mode libre ! Écris le code HTML de ton choix (titres, paragraphes...). Je vérifierai s'il n'y a pas d'erreurs générales.";
-            } else {
-                qText.innerHTML = iaQuestions[currentQuestionIndex].text;
-            }
-        }
-
-        function toggleExerciseMode() {
-            const modeBtn = document.getElementById('modeBtn');
-            const iaBox = document.getElementById('iaQuestionBox');
-            const feedback = document.getElementById('feedbackBox');
-            
-            feedback.style.display = "none";
-            isFreeMode = !isFreeMode;
-
-            if (isFreeMode) {
-                modeBtn.innerText = "Mode Guidé";
-                iaBox.style.backgroundColor = "#27ae60";
-                iaBox.querySelector('h3').innerText = "📝 Exercice Libre";
-            } else {
-                modeBtn.innerText = "Exercice libre";
-                iaBox.style.backgroundColor = "var(--ia-green)";
-                iaBox.querySelector('h3').innerText = "🤖 Exercice avec des questions";
-            }
-            loadQuestion();
-        }
-
-        // Initialisation de la première question au chargement
-        window.onload = function() {
-            loadQuestion();
-        };
-
-        // --- CORRIGER L'EXERCICE ---
-        function checkCode() {
-            const code = document.getElementById('codeEditor').value.trim();
-            const feedback = document.getElementById('feedbackBox');
-            feedback.style.display = "block";
-
-            if (code === "") {
-                feedback.style.borderLeftColor = "var(--danger-color)";
-                feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA :</span> La zone est vide ! Écris quelque chose pour que je puisse corriger.";
-                return;
-            }
-
-            if (isFreeMode) {
-                // Vérification basique en mode libre
-                if ((code.includes('<') && code.includes('>')) && !code.includes('</')) {
-                    feedback.style.borderLeftColor = "var(--danger-color)";
-                    feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA Attention :</span> Tu as ouvert une balise mais tu as oublié de mettre une balise de fermeture avec un '/' !";
-                } else {
-                    feedback.style.borderLeftColor = "var(--success-color)";
-                    feedback.innerHTML = "<span style='color:var(--success-color); font-weight:bold;'>IA Analyse :</span> Ton code libre a l'air bien structuré ! Continue à expérimenter.";
-                }
-            } else {
-                // Mode Guidé (Vérification stricte de la question en cours)
-                const currentQ = iaQuestions[currentQuestionIndex];
-                
-                if (code.includes(currentQ.tagRequired) && code.includes(currentQ.tagCloseRequired) && code.includes(currentQ.contentRequired)) {
-                    feedback.style.borderLeftColor = "var(--success-color)";
-                    feedback.innerHTML = "<span style='color:var(--success-color); font-weight:bold;'>IA Succès !</span> C'est parfait ! Tu as correctement résolu ma question.";
-                    
-                    // Passer à la question suivante s'il y en a une
-                    if(currentQuestionIndex < iaQuestions.length - 1) {
-                        setTimeout(() => {
-                            currentQuestionIndex++;
-                            loadQuestion();
-                            feedback.style.display = "none";
-                            document.getElementById('codeEditor').value = "";
-                        }, 2500);
-                    }
-                } else {
-                    feedback.style.borderLeftColor = "var(--danger-color)";
-                    let erreurs = "Voici ce qu'il faut corriger :<br>";
-                    if (!code.includes(currentQ.tagRequired)) erreurs += `- Il te manque la balise d'ouverture "${currentQ.tagRequired}"<br>`;
-                    if (!code.includes(currentQ.contentRequired)) erreurs += `- Tu as oublié d'écrire le texte exact "${currentQ.contentRequired}"<br>`;
-                    if (!code.includes(currentQ.tagCloseRequired)) erreurs += `- Il te manque la balise de fermeture "${currentQ.tagCloseRequired}"`;
-                    feedback.innerHTML = `<span style='color:var(--danger-color); font-weight:bold;'>IA Erreur :</span><br>${erreurs}`;
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+        // --- BASE DE DONNÉES APPRENDRE (Leçons + Exemples + Rendus) ---
+        const learnDatabase = {
+            1: [ // HTML
+                { text: "Bienvenue dans le Chapitre HTML ! C'est le squelette de ton site. Utilisons la balise de grand titre <h1> pour écrire un mot important.", code: "<h1>Bienvenue</h1>", type: "html" },
+                { text: "Super ! Maintenant, découvrons comment ajouter un paragraphe de texte normal grâce à la balise <p>.", code: "<p>Ceci est un paragraphe écrit par l'IA.</p>", type: "html" },
+                { text: "On peut aussi créer des boutons cliquables avec la balise <button>.", code: "<button>Clique ici !</button>", type: "html" }
+            ],
+            2:

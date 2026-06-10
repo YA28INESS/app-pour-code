@@ -1,3 +1,8 @@
+Voici le code complet et mis à jour ! J'ai intégré tout ton système pédagogique : la progression par chapitres (HTML ➔ CSS ➔ JS), le compteur de pages style livre, la zone noire d'exemple avec son bouton orange pour générer le rendu visuel/l'animation, la tonne de questions d'exercices différentes gérées par l'IA, et le bouton vert "Suivant" après chaque réussite.
+
+Efface tout le contenu actuel de ton fichier `index.html` sur GitHub et colle ce code à la place :
+
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -622,4 +627,174 @@
                 { text: "Super ! Maintenant, découvrons comment ajouter un paragraphe de texte normal grâce à la balise <p>.", code: "<p>Ceci est un paragraphe écrit par l'IA.</p>", type: "html" },
                 { text: "On peut aussi créer des boutons cliquables avec la balise <button>.", code: "<button>Clique ici !</button>", type: "html" }
             ],
-            2:
+            2: [ // CSS
+                { text: "Bravo, tu es au Chapitre 2 : CSS (le style !). On l'utilise pour colorer nos textes en rouge par exemple.", code: "<h1 style='color: red;'>Titre en Rouge</h1>", type: "css" },
+                { text: "On peut changer la couleur de fond d'un texte avec 'background-color'. Regarde cet exemple :", code: "<p style='background-color: yellow; color: black; padding: 5px;'>Fond jaune !</p>", type: "css" }
+            ],
+            3: [ // JS
+                { text: "Bienvenue dans l'ultime Chapitre 3 : JavaScript ! Il sert à créer des calculs et de la logique. Voici une alerte automatique.", code: "alert('Bravo ! Tu as activé du code JavaScript !');", type: "js" },
+                { text: "Le JavaScript sait aussi faire bouger les choses. Regarde cette boîte s'animer !", code: "// Lancement d'une animation graphique animée !", type: "js-anim" }
+            ]
+        };
+        let currentLessonIndex = 0;
+
+        function startLearning() {
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('lessonBox').style.display = 'block';
+            showLesson();
+        }
+
+        function showLesson() {
+            const currentLesson = learnDatabase[currentChapter][currentLessonIndex];
+            document.getElementById('lessonText').innerText = currentLesson.text;
+            document.getElementById('codeExample').innerText = currentLesson.code;
+            document.getElementById('pageCounter').innerText = (currentLessonIndex + 1);
+            document.getElementById('renderOutput').style.display = "none"; // Cache l'ancien rendu
+            document.getElementById('prevBtn').disabled = (currentLessonIndex === 0);
+        }
+
+        function changeLesson(direction) {
+            currentLessonIndex += direction;
+            if (currentLessonIndex >= learnDatabase[currentChapter].length) {
+                // Passage automatique au chapitre supérieur s'il existe
+                if (currentChapter < 3) {
+                    currentChapter++;
+                    currentLessonIndex = 0;
+                    updateChapterBadges();
+                    loadQuestion();
+                    alert("Félicitations ! Tu passes au chapitre suivant !");
+                    showLesson();
+                } else {
+                    alert("Incroyable ! Tu as terminé toutes les leçons de l'école de code ! Devien un pro dans l'onglet Exercice.");
+                    currentLessonIndex = learnDatabase[currentChapter].length - 1;
+                }
+            } else if (currentLessonIndex < 0) {
+                currentLessonIndex = 0;
+            }
+            showLesson();
+        }
+
+        function generateRender() {
+            const currentLesson = learnDatabase[currentChapter][currentLessonIndex];
+            const output = document.getElementById('renderOutput');
+            output.style.display = "block";
+
+            if (currentLesson.type === "html" || currentLesson.type === "css") {
+                output.innerHTML = currentLesson.code;
+            } else if (currentLesson.type === "js") {
+                output.innerHTML = "<span style='color:gray;'>[Alerte système déclenchée]</span>";
+                alert('Bravo ! Tu as activé du code JavaScript !');
+            } else if (currentLesson.type === "js-anim") {
+                output.innerHTML = "<div class='animated-box'></div>";
+            }
+        }
+
+        // --- BASE DE DONNÉES EXERCICES (Questions de l'IA multiples) ---
+        const exerciseDatabase = {
+            1: [ // Exercices HTML
+                { q: "Crée un grand titre <h1> contenant le mot exact 'Bienvenue'.", req: "<h1>", reqClose: "</h1>", txt: "Bienvenue" },
+                { q: "Ajoute maintenant un paragraphe <p> contenant le mot exact 'Bonjour'.", req: "<p>", reqClose: "</p>", txt: "Bonjour" },
+                { q: "Crée un bouton <button> contenant le texte exact 'Acheter'.", req: "<button>", reqClose: "</button>", txt: "Acheter" }
+            ],
+            2: [ // Exercices CSS
+                { q: "Fais un titre rouge. Écris exactement : <h1 style='color: red;'>Stop</h1>", req: "style='color: red;'", reqClose: "</h1>", txt: "Stop" },
+                { q: "Fais un paragraphe avec un fond jaune. Écris : <p style='background-color: yellow;'>Lumière</p>", req: "background-color: yellow;", reqClose: "</p>", txt: "Lumière" }
+            ],
+            3: [ // Exercices JS
+                { q: "Écris la commande d'alerte exacte pour envoyer 'Gagné' sur l'écran : alert('Gagné');", req: "alert(", reqClose: ");", txt: "Gagné" }
+            ]
+        };
+        let currentExerciseIndex = 0;
+
+        function loadQuestion() {
+            const qBox = document.getElementById('iaQuestionText');
+            if (isFreeMode) {
+                qBox.innerHTML = "Mode exercice libre activé ! Tape le code de ton choix (HTML, CSS ou JS). L'IA va scanner s'il n'y a pas d'erreur critique de fermeture.";
+            } else {
+                qBox.innerHTML = exerciseDatabase[currentChapter][currentExerciseIndex].q;
+            }
+        }
+
+        function toggleExerciseMode() {
+            isFreeMode = !isFreeMode;
+            const modeBtn = document.getElementById('modeBtn');
+            const iaBox = document.getElementById('iaQuestionBox');
+            document.getElementById('feedbackBox').style.display = "none";
+
+            if (isFreeMode) {
+                modeBtn.innerText = "Mode Guidé";
+                iaBox.style.backgroundColor = "#27ae60";
+                iaBox.querySelector('h3').innerText = "📝 Exercice Libre";
+            } else {
+                modeBtn.innerText = "Exercice libre";
+                iaBox.style.backgroundColor = "var(--ia-green)";
+                iaBox.querySelector('h3').innerText = "🤖 Exercice avec des questions";
+            }
+            loadQuestion();
+        }
+
+        function checkCode() {
+            const code = document.getElementById('codeEditor').value.trim();
+            const feedback = document.getElementById('feedbackBox');
+            feedback.style.display = "block";
+
+            if (code === "") {
+                feedback.style.borderLeftColor = "var(--danger-color)";
+                feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA :</span> Tu n'as rien écrit ! Complète l'exercice.";
+                return;
+            }
+
+            if (isFreeMode) {
+                if (code.includes('<') && code.includes('>') && !code.includes('</') && !code.includes('/>')) {
+                    feedback.style.borderLeftColor = "var(--danger-color)";
+                    feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA Analyse :</span> Attention ! Tu as ouvert une balise mais tu as oublié de la refermer avec un caractere '/' !";
+                } else {
+                    feedback.style.borderLeftColor = "var(--success-color)";
+                    feedback.innerHTML = "<span style='color:var(--success-color); font-weight:bold;'>IA Analyse :</span> Ton code libre semble parfaitement valide. Continue tes tests !";
+                }
+            } else {
+                const currentEx = exerciseDatabase[currentChapter][currentExerciseIndex];
+                
+                const hasOpen = code.includes(currentEx.req);
+                const hasClose = code.includes(currentEx.reqClose);
+                const hasTxt = code.includes(currentEx.txt);
+
+                if (hasOpen && hasClose && hasTxt) {
+                    feedback.style.borderLeftColor = "var(--success-color)";
+                    feedback.innerHTML = `
+                        <span style='color:var(--success-color); font-weight:bold;'>IA Succès ! C'est parfait ! Tu as correctement résolu ma question.</span>
+                        <button class="next-exercise-btn" onclick="nextExercise()">Suivant</button>
+                    `;
+                } else {
+                    feedback.style.borderLeftColor = "var(--danger-color)";
+                    let fautes = "Défauts détectés :<br>";
+                    if(!hasOpen) fautes += `- Il manque l'élément d'ouverture ou l'attribut précis : "${currentEx.req}"<br>`;
+                    if(!hasTxt) fautes += `- Tu as oublié d'écrire le texte exact : "${currentEx.txt}"<br>`;
+                    if(!hasClose) fautes += `- Il manque l'élément de fermeture final : "${currentEx.reqClose}"`;
+                    feedback.innerHTML = `<span style='color:var(--danger-color); font-weight:bold;'>IA Échec :</span><br>${fautes}`;
+                }
+            }
+        }
+
+        function nextExercise() {
+            document.getElementById('feedbackBox').style.display = "none";
+            document.getElementById('codeEditor').value = "";
+            currentExerciseIndex++;
+
+            if (currentExerciseIndex >= exerciseDatabase[currentChapter].length) {
+                alert("Excellent ! Tu as fini tous les exercices de ce chapitre ! Va lire le chapitre suivant dans l'onglet Apprendre.");
+                currentExerciseIndex = 0;
+            }
+            loadQuestion();
+        }
+
+        // Initialisation de la page
+        window.onload = function() {
+            updateChapterBadges();
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>
+
+```

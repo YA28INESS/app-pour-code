@@ -348,18 +348,6 @@
             font-weight: 500;
         }
 
-        /* Animation de réflexion de l'IA */
-        @keyframes pulseIA {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-        .ia-thinking {
-            font-style: italic;
-            animation: pulseIA 1.5s infinite ease-in-out;
-            color: #e0f2f1;
-        }
-
         .editor-side {
             flex: 1;
             display: flex;
@@ -423,6 +411,7 @@
             font-size: 0.95rem;
         }
 
+        /* Bouton suivant vert interne */
         .next-exercise-btn {
             background-color: var(--ia-green);
             color: white;
@@ -454,7 +443,6 @@
 </head>
 <body>
 
-    <!-- Barre latérale -->
     <div class="sidebar">
         <h2>Mon App Code</h2>
         <button class="nav-btn active" onclick="switchTab('compte')">Compte</button>
@@ -462,10 +450,8 @@
         <button class="nav-btn" onclick="switchTab('exercice')">Exercice</button>
     </div>
 
-    <!-- Zone principale -->
     <div class="main-content">
 
-        <!-- ONGLET COMPTE -->
         <div id="compte" class="tab-content active">
             <h1>Gestion du Compte</h1>
             <div id="connectionBanner" class="status-banner status-disconnected">Compte non connecté</div>
@@ -532,7 +518,6 @@
             </div>
         </div>
 
-        <!-- ONGLET APPRENDRE -->
         <div id="apprendre" class="tab-content">
             <div class="title-area">
                 <h1>Apprendre les bases</h1>
@@ -543,8 +528,11 @@
 
             <div id="lessonBox" class="lesson-box">
                 <div id="lessonText" class="lesson-text"></div>
+                
                 <div id="codeExample" class="code-example-box"></div>
+                
                 <button class="render-btn" onclick="generateRender()">Générer le rendu</button>
+                
                 <div id="renderOutput" class="render-output-zone"></div>
 
                 <div class="lesson-footer-layout">
@@ -555,7 +543,6 @@
             </div>
         </div>
 
-        <!-- ONGLET EXERCICE -->
         <div id="exercice" class="tab-content">
             <div class="title-area">
                 <h1>Zone d'Exercice</h1>
@@ -565,9 +552,7 @@
             <div class="exercise-layout">
                 <div id="iaQuestionBox" class="ia-question-box">
                     <h3>🤖 Exercice avec des questions</h3>
-                    <div id="iaQuestionText" class="ia-question-text">
-                        <span class="ia-thinking">⚡ IA en cours de réflexion...</span>
-                    </div>
+                    <div id="iaQuestionText" class="ia-question-text">Étape 1 : Crée un titre principal complet.</div>
                 </div>
 
                 <div class="editor-side">
@@ -588,49 +573,9 @@
     </div>
 
     <script>
-        // --- DONNÉES ET BASES DE DONNÉES ---
-        let currentChapter = 1; 
+        // --- ETAT GLOBAL DU JEU / PARCOURS ---
+        let currentChapter = 1; // 1 = HTML, 2 = CSS, 3 = JS
         let isFreeMode = false;
-        let currentLessonIndex = 0;
-        let currentExerciseIndex = 0;
-
-        const learnDatabase = {
-            1: [
-                { text: "Bienvenue dans le Chapitre HTML ! C'est le squelette de ton site. Utilisons la balise de grand titre <h1> pour écrire un mot important.", code: "<h1>Bienvenue</h1>", type: "html" },
-                { text: "Super ! Maintenant, découvrons comment ajouter un paragraphe de texte normal grâce à la balise <p>.", code: "<p>Ceci est un paragraphe écrit par l'IA.</p>", type: "html" },
-                { text: "On peut aussi créer des boutons cliquables avec la balise <button>.", code: "<button>Clique ici !</button>", type: "html" }
-            ],
-            2: [
-                { text: "Bravo, tu es au Chapitre 2 : CSS (le style !). On l'utilise pour colorer nos textes en rouge par exemple.", code: "<h1 style='color: red;'>Titre en Rouge</h1>", type: "css" },
-                { text: "On peut changer la couleur de fond d'un texte avec 'background-color'. Regarde cet exemple :", code: "<p style='background-color: yellow; color: black; padding: 5px;'>Fond jaune !</p>", type: "css" }
-            ],
-            3: [
-                { text: "Bienvenue dans l'ultime Chapitre 3 : JavaScript ! Il sert à créer des calculs et de la logique. Voici une alerte automatique.", code: "alert('Bravo ! Tu as activé du code JavaScript !');", type: "js" },
-                { text: "Le JavaScript sait aussi faire bouger les choses. Regarde cette boîte s'animer !", code: "// Lancement d'une animation graphique animée !", type: "js-anim" }
-            ]
-        };
-
-        const exerciseDatabase = {
-            1: [
-                { q: "Crée un grand titre <h1> contenant le mot exact 'Bienvenue'.", req: "<h1>", reqClose: "</h1>", txt: "Bienvenue" },
-                { q: "Ajoute maintenant un paragraphe <p> contenant le mot exact 'Bonjour'.", req: "<p>", reqClose: "</p>", txt: "Bonjour" },
-                { q: "Crée un bouton <button> contenant le texte exact 'Acheter'.", req: "<button>", reqClose: "</button>", txt: "Acheter" }
-            ],
-            2: [
-                { q: "Fais un titre rouge. Écris exactement : <h1 style='color: red;'>Stop</h1>", req: "style='color: red;'", reqClose: "</h1>", txt: "Stop" },
-                { q: "Fais un paragraphe avec un fond jaune. Écris : <p style='background-color: yellow;'>Lumière</p>", req: "background-color: yellow;", reqClose: "</p>", txt: "Lumière" }
-            ],
-            3: [
-                { q: "Écris la commande d'alerte exacte pour envoyer 'Gagné' sur l'écran : alert('Gagné');", req: "alert(", reqClose: ");", txt: "Gagné" }
-            ]
-        };
-
-        // --- ENCLENCHEMENT DE SÉCURITÉ AU CHARGEMENT ---
-        window.onload = function() {
-            updateChapterBadges();
-            // L'IA quitte son animation de réflexion et charge la première question
-            setTimeout(loadQuestion, 800); 
-        };
 
         function updateChapterBadges() {
             const names = ["", "Chapitre 1 : HTML", "Chapitre 2 : CSS", "Chapitre 3 : JavaScript"];
@@ -642,12 +587,10 @@
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            if(event && event.currentTarget) {
-                event.currentTarget.classList.add('active');
-            }
+            event.currentTarget.classList.add('active');
         }
 
-        // --- COMPTE ET SÉCURITÉ ---
+        // --- COMPTE ET ŒIL DE SÉCURITÉ ---
         function togglePassword(inputId, btn) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {
@@ -672,7 +615,24 @@
             alert("Opération validée avec succès !");
         }
 
-        // --- LOGIQUE ONGLET APPRENDRE ---
+        // --- BASE DE DONNÉES APPRENDRE (Leçons + Exemples + Rendus) ---
+        const learnDatabase = {
+            1: [ // HTML
+                { text: "Bienvenue dans le Chapitre HTML ! C'est le squelette de ton site. Utilisons la balise de grand titre <h1> pour écrire un mot important.", code: "<h1>Bienvenue</h1>", type: "html" },
+                { text: "Super ! Maintenant, découvrons comment ajouter un paragraphe de texte normal grâce à la balise <p>.", code: "<p>Ceci est un paragraphe écrit par l'IA.</p>", type: "html" },
+                { text: "On peut aussi créer des boutons cliquables avec la balise <button>.", code: "<button>Clique ici !</button>", type: "html" }
+            ],
+            2: [ // CSS
+                { text: "Bravo, tu es au Chapitre 2 : CSS (le style !). On l'utilise pour colorer nos textes en rouge par exemple.", code: "<h1 style='color: red;'>Titre en Rouge</h1>", type: "css" },
+                { text: "On peut changer la couleur de fond d'un texte avec 'background-color'. Regarde cet exemple :", code: "<p style='background-color: yellow; color: black; padding: 5px;'>Fond jaune !</p>", type: "css" }
+            ],
+            3: [ // JS
+                { text: "Bienvenue dans l'ultime Chapitre 3 : JavaScript ! Il sert à créer des calculs et de la logique. Voici une alerte automatique.", code: "alert('Bravo ! Tu as activé du code JavaScript !');", type: "js" },
+                { text: "Le JavaScript sait aussi faire bouger les choses. Regarde cette boîte s'animer !", code: "// Lancement d'une animation graphique animée !", type: "js-anim" }
+            ]
+        };
+        let currentLessonIndex = 0;
+
         function startLearning() {
             document.getElementById('startBtn').style.display = 'none';
             document.getElementById('lessonBox').style.display = 'block';
@@ -684,13 +644,14 @@
             document.getElementById('lessonText').innerText = currentLesson.text;
             document.getElementById('codeExample').innerText = currentLesson.code;
             document.getElementById('pageCounter').innerText = (currentLessonIndex + 1);
-            document.getElementById('renderOutput').style.display = "none"; 
+            document.getElementById('renderOutput').style.display = "none"; // Cache l'ancien rendu
             document.getElementById('prevBtn').disabled = (currentLessonIndex === 0);
         }
 
         function changeLesson(direction) {
             currentLessonIndex += direction;
             if (currentLessonIndex >= learnDatabase[currentChapter].length) {
+                // Passage automatique au chapitre supérieur s'il existe
                 if (currentChapter < 3) {
                     currentChapter++;
                     currentLessonIndex = 0;
@@ -699,7 +660,7 @@
                     alert("Félicitations ! Tu passes au chapitre suivant !");
                     showLesson();
                 } else {
-                    alert("Incroyable ! Tu as terminé toutes les leçons ! Devien un pro dans l'onglet Exercice.");
+                    alert("Incroyable ! Tu as terminé toutes les leçons de l'école de code ! Devien un pro dans l'onglet Exercice.");
                     currentLessonIndex = learnDatabase[currentChapter].length - 1;
                 }
             } else if (currentLessonIndex < 0) {
@@ -723,15 +684,29 @@
             }
         }
 
-        // --- LOGIQUE ONGLET EXERCICE ---
+        // --- BASE DE DONNÉES EXERCICES (Questions de l'IA multiples) ---
+        const exerciseDatabase = {
+            1: [ // Exercices HTML
+                { q: "Crée un grand titre <h1> contenant le mot exact 'Bienvenue'.", req: "<h1>", reqClose: "</h1>", txt: "Bienvenue" },
+                { q: "Ajoute maintenant un paragraphe <p> contenant le mot exact 'Bonjour'.", req: "<p>", reqClose: "</p>", txt: "Bonjour" },
+                { q: "Crée un bouton <button> contenant le texte exact 'Acheter'.", req: "<button>", reqClose: "</button>", txt: "Acheter" }
+            ],
+            2: [ // Exercices CSS
+                { q: "Fais un titre rouge. Écris exactement : <h1 style='color: red;'>Stop</h1>", req: "style='color: red;'", reqClose: "</h1>", txt: "Stop" },
+                { q: "Fais un paragraphe avec un fond jaune. Écris : <p style='background-color: yellow;'>Lumière</p>", req: "background-color: yellow;", reqClose: "</p>", txt: "Lumière" }
+            ],
+            3: [ // Exercices JS
+                { q: "Écris la commande d'alerte exacte pour envoyer 'Gagné' sur l'écran : alert('Gagné');", req: "alert(", reqClose: ");", txt: "Gagné" }
+            ]
+        };
+        let currentExerciseIndex = 0;
+
         function loadQuestion() {
             const qBox = document.getElementById('iaQuestionText');
             if (isFreeMode) {
-                qBox.innerHTML = "Mode exercice libre activé ! Tape le code de ton choix. L'IA va scanner s'il n'y a pas d'erreur critique de fermeture.";
+                qBox.innerHTML = "Mode exercice libre activé ! Tape le code de ton choix (HTML, CSS ou JS). L'IA va scanner s'il n'y a pas d'erreur critique de fermeture.";
             } else {
-                if(exerciseDatabase[currentChapter] && exerciseDatabase[currentChapter][currentExerciseIndex]) {
-                    qBox.innerHTML = exerciseDatabase[currentChapter][currentExerciseIndex].q;
-                }
+                qBox.innerHTML = exerciseDatabase[currentChapter][currentExerciseIndex].q;
             }
         }
 
@@ -788,7 +763,7 @@
                 } else {
                     feedback.style.borderLeftColor = "var(--danger-color)";
                     let fautes = "Défauts détectés :<br>";
-                    if(!hasOpen) fautes += `- Il manque l'élément d'ouverture : "${currentEx.req}"<br>`;
+                    if(!hasOpen) fautes += `- Il manque l'élément d'ouverture ou l'attribut précis : "${currentEx.req}"<br>`;
                     if(!hasTxt) fautes += `- Tu as oublié d'écrire le texte exact : "${currentEx.txt}"<br>`;
                     if(!hasClose) fautes += `- Il manque l'élément de fermeture final : "${currentEx.reqClose}"`;
                     feedback.innerHTML = `<span style='color:var(--danger-color); font-weight:bold;'>IA Échec :</span><br>${fautes}`;
@@ -807,6 +782,12 @@
             }
             loadQuestion();
         }
+
+        // Initialisation de la page
+        window.onload = function() {
+            updateChapterBadges();
+            loadQuestion();
+        };
     </script>
 </body>
 </html>

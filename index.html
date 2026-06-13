@@ -100,7 +100,6 @@
             font-size: 2rem;
         }
 
-        /* Badge Chapitre */
         .chapter-badge {
             background-color: var(--accent-color);
             color: var(--bg-color);
@@ -110,684 +109,75 @@
             font-size: 1rem;
         }
 
-        /* --- Onglet COMPTE --- */
-        .status-banner {
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-        .status-disconnected {
-            background-color: rgba(243, 139, 168, 0.15);
-            color: var(--danger-color);
-            border: 1px solid var(--danger-color);
-        }
-        .status-connected {
-            background-color: rgba(166, 227, 161, 0.15);
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-
-        .auth-container {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .auth-card {
-            background-color: var(--card-bg);
-            padding: 25px;
+        /* --- NOUVEAU DESIGN DE L'ONGLET COMPTE --- */
+        .account-contour {
+            border: 2px solid var(--accent-color);
             border-radius: 12px;
-            flex: 1;
-            min-width: 300px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .auth-card h3 {
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #585b70;
-            background-color: var(--input-bg);
-            color: white;
-            font-size: 1rem;
-        }
-
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .password-wrapper input {
-            padding-right: 40px;
-        }
-        .eye-btn {
-            position: absolute;
-            right: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--text-color);
-            user-select: none;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        /* --- Onglet APPRENDRE --- */
-        .learn-intro-btn {
-            background-color: var(--ia-green);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 40px auto;
-            display: block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .lesson-box {
-            display: none;
-            background-color: var(--card-bg);
-            padding: 35px;
-            border-radius: 12px;
-            max-width: 750px;
-            margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: relative;
-        }
-
-        .lesson-text {
-            font-size: 1.15rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        /* Carré noir exemple */
-        .code-example-box {
-            background-color: #11111b;
-            color: #fab387;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.05rem;
-            margin-bottom: 12px;
-            border: 1px solid #45475a;
-            white-space: pre-wrap;
-        }
-
-        .render-btn {
-            background-color: var(--render-orange);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        /* Zone d'affichage du rendu visuel */
-        .render-output-zone {
-            background-color: white;
-            color: black;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 25px;
-            min-height: 60px;
-            border: 2px dashed #cca;
-            display: none;
-        }
-
-        /* Animation spécifique pour l'exemple JS/CSS */
-        @keyframes slide {
-            from { margin-left: 0%; }
-            to { margin-left: 70%; }
-        }
-        .animated-box {
-            width: 50px;
-            height: 50px;
-            background-color: #e74c3c;
-            animation: slide 2s infinite alternate ease-in-out;
-        }
-
-        .lesson-footer-layout {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .page-counter {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            background-color: rgba(137, 180, 250, 0.1);
-            padding: 5px 12px;
-            border-radius: 6px;
-        }
-
-        .lesson-nav-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .lesson-nav-btn:disabled {
-            background-color: #585b70;
-            cursor: not-allowed;
-            color: #a6adc8;
-        }
-
-        /* --- Onglet EXERCICE --- */
-        .exercise-layout {
-            display: flex;
-            gap: 20px;
-            flex: 1;
-            height: calc(100% - 60px);
-            position: relative;
-        }
-
-        /* Rectangle Vert IA à gauche */
-        .ia-question-box {
-            width: 300px;
-            background-color: var(--ia-green);
-            color: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            max-width: 450px;
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: rgba(137, 180, 250, 0.05);
         }
 
-        .ia-question-box h3 {
+        .account-contour .name-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .account-contour .status-text {
             font-size: 1.1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            padding-bottom: 8px;
-        }
-
-        .ia-question-text {
-            font-size: 1rem;
-            line-height: 1.5;
             font-weight: 500;
         }
+        .status-connected-text { color: var(--success-color); }
+        .status-disconnected-text { color: var(--danger-color); }
 
-        .editor-side {
-            flex: 1;
+        .auth-trigger-layout {
             display: flex;
-            flex-direction: column;
+            gap: 20px;
+            max-width: 450px;
+            margin-bottom: 30px;
+        }
+
+        .btn-green-rect {
+            flex: 1;
+            background-color: var(--ia-green);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+        .btn-green-rect:hover {
+            background-color: #1e9444;
+        }
+
+        /* Boîtes d'étapes d'authentification */
+        .auth-flow-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 450px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            display: none; /* Masqué par défaut */
             position: relative;
         }
 
-        textarea.code-editor {
-            width: 100%;
-            flex: 1;
-            background-color: #11111b;
-            color: #a6e3a1;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.1rem;
-            padding: 15px;
-            border: 1px solid #45475a;
-            border-radius: 8px;
-            resize: none;
-            margin-bottom: 75px;
-        }
-
-        /* Actions du bas */
-        .exercise-actions {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+        .flow-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
         }
 
-        .mode-toggle-btn {
-            background-color: var(--ia-green);
-            color: white;
+        .back-arrow {
+            background: none;
             border: none;
-            padding: 12px 20px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-
-        .right-control {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-            max-width: 450px;
-            width: 60%;
-        }
-
-        .feedback-box {
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 5px solid var(--accent-color);
-            display: none;
-            width: 100%;
-            font-size: 0.95rem;
-        }
-
-        /* Bouton suivant vert interne */
-        .next-exercise-btn {
-            background-color: var(--ia-green);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            display: block;
-        }
-
-        .correction-btn {
-            background-color: #e67e22;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-        .correction-btn:hover {
-            background-color: #d35400;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="sidebar">
-        <h2>Mon App Code</h2>
-        <button class="nav-btn active" onclick="switchTab('compte')">Compte</button>
-        <button class="nav-btn" onclick="switchTab('apprendre')">Apprendre</button>
-        <button class="nav-btn" onclick="switchTab('exercice')">Exercice</button>
-    </div>
-
-    <div class="main-content">
-
-        <div id="compte" class="tab-content active">
-            <h1>Gestion du Compte</h1>
-            <div id="connectionBanner" class="status-banner status-disconnected">Compte non connecté</div>
-
-            <div class="auth-container">
-                <div class="auth-card">
-                    <h3>Créer un compte</h3>
-                    <form onsubmit="handleAuth(event, 'inscription')">
-                        <div class="form-group">
-                            <label>Sauvegarder progression sur :</label>
-                            <select required>
-                                <option value="google">Google</option>
-                                <option value="email">E-mail</option>
-                                <option value="telephone">Téléphone</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Nom :</label>
-                            <input type="text" placeholder="Ton nom" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Mot de passe :</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="regPassword" placeholder="••••••••" required>
-                                <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)">👁️‍🗨️</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Vérification du mot de passe :</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="regPasswordConfirm" placeholder="••••••••" required>
-                                <button type="button" class="eye-btn" onclick="togglePassword('regPasswordConfirm', this)">👁️‍🗨️</button>
-                            </div>
-                        </div>
-                        <button type="submit" class="submit-btn">S'inscrire</button>
-                    </form>
-                </div>
-
-                <div class="auth-card">
-                    <h3>Se connecter</h3>
-                    <form onsubmit="handleAuth(event, 'connexion')">
-                        <div class="form-group">
-                            <label>Support :</label>
-                            <select required>
-                                <option value="google">Google</option>
-                                <option value="email">E-mail</option>
-                                <option value="telephone">Téléphone</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Nom :</label>
-                            <input type="text" placeholder="Ton nom" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Mot de passe :</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="loginPassword" placeholder="••••••••" required>
-                                <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)">👁️‍🗨️</button>
-                            </div>
-                        </div>
-                        <button type="submit" class="submit-btn">Se connecter</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="apprendre" class="tab-content">
-            <div class="title-area">
-                <h1>Apprendre les bases</h1>
-                <div id="chapterBadgeLearn" class="chapter-badge">Chapitre 1 : HTML</div>
-            </div>
-            
-            <button id="startBtn" class="learn-intro-btn" onclick="startLearning()">Commencer l'exercice</button>
-
-            <div id="lessonBox" class="lesson-box">
-                <div id="lessonText" class="lesson-text"></div>
-                
-                <div id="codeExample" class="code-example-box"></div>
-                
-                <button class="render-btn" onclick="generateRender()">Générer le rendu</button>
-                
-                <div id="renderOutput" class="render-output-zone"></div>
-
-                <div class="lesson-footer-layout">
-                    <button id="prevBtn" class="lesson-nav-btn" onclick="changeLesson(-1)">Précédent</button>
-                    <div id="pageCounter" class="page-counter">1</div>
-                    <button id="nextBtn" class="lesson-nav-btn" onclick="changeLesson(1)">Suivant</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="exercice" class="tab-content">
-            <div class="title-area">
-                <h1>Zone d'Exercice</h1>
-                <div id="chapterBadgeExercise" class="chapter-badge">Chapitre 1 : HTML</div>
-            </div>
-            
-            <div class="exercise-layout">
-                <div id="iaQuestionBox" class="ia-question-box">
-                    <h3>🤖 Exercice avec des questions</h3>
-                    <div id="iaQuestionText" class="ia-question-text">Étape 1 : Crée un titre principal complet.</div>
-                </div>
-
-                <div class="editor-side">
-                    <textarea id="codeEditor" class="code-editor" placeholder="Écris ton code ici..."></textarea>
-                    
-                    <div class="exercise-actions">
-                        <button id="modeBtn" class="mode-toggle-btn" onclick="toggleExerciseMode()">Exercice libre</button>
-                        
-                        <div class="right-control">
-                            <div id="feedbackBox" class="feedback-box"></div>
-                            <button class="correction-btn" onclick="checkCode()">Corriger l'exercice</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // --- ETAT GLOBAL DU JEU / PARCOURS ---
-        let currentChapter = 1; // 1 = HTML, 2 = CSS, 3 = JS
-        let isFreeMode = false;
-
-        function updateChapterBadges() {
-            const names = ["", "Chapitre 1 : HTML", "Chapitre 2 : CSS", "Chapitre 3 : JavaScript"];
-            document.getElementById('chapterBadgeLearn').innerText = names[currentChapter];
-            document.getElementById('chapterBadgeExercise').innerText = names[currentChapter];
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // --- COMPTE ET ŒIL DE SÉCURITÉ ---
-        function togglePassword(inputId, btn) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                btn.innerText = "👁️";
-            } else {
-                input.type = "password";
-                btn.innerText = "👁️‍🗨️";
-            }
-        }
-
-        function handleAuth(event, type) {
-            event.preventDefault();
-            const banner = document.getElementById('connectionBanner');
-            if (type === 'inscription') {
-                if(document.getElementById('regPassword').value !== document.getElementById('regPasswordConfirm').value) {
-                    return alert("Les mots de passe ne concordent pas !");
-                }
-            }
-            banner.innerText = "Compte connecté";
-            banner.className = "status-banner status-connected";
-            alert("Opération validée avec succès !");
-        }
-
-        // --- BASE DE DONNÉES APPRENDRE (Leçons + Exemples + Rendus) ---
-        const learnDatabase = {
-            1: [ // HTML
-                { text: "Bienvenue dans le Chapitre HTML ! C'est le squelette de ton site. Utilisons la balise de grand titre <h1> pour écrire un mot important.", code: "<h1>Bienvenue</h1>", type: "html" },
-                { text: "Super ! Maintenant, découvrons comment ajouter un paragraphe de texte normal grâce à la balise <p>.", code: "<p>Ceci est un paragraphe écrit par l'IA.</p>", type: "html" },
-                { text: "On peut aussi créer des boutons cliquables avec la balise <button>.", code: "<button>Clique ici !</button>", type: "html" }
-            ],
-            2: [ // CSS
-                { text: "Bravo, tu es au Chapitre 2 : CSS (le style !). On l'utilise pour colorer nos textes en rouge par exemple.", code: "<h1 style='color: red;'>Titre en Rouge</h1>", type: "css" },
-                { text: "On peut changer la couleur de fond d'un texte avec 'background-color'. Regarde cet exemple :", code: "<p style='background-color: yellow; color: black; padding: 5px;'>Fond jaune !</p>", type: "css" }
-            ],
-            3: [ // JS
-                { text: "Bienvenue dans l'ultime Chapitre 3 : JavaScript ! Il sert à créer des calculs et de la logique. Voici une alerte automatique.", code: "alert('Bravo ! Tu as activé du code JavaScript !');", type: "js" },
-                { text: "Le JavaScript sait aussi faire bouger les choses. Regarde cette boîte s'animer !", code: "// Lancement d'une animation graphique animée !", type: "js-anim" }
-            ]
-        };
-        let currentLessonIndex = 0;
-
-        function startLearning() {
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('lessonBox').style.display = 'block';
-            showLesson();
-        }
-
-        function showLesson() {
-            const currentLesson = learnDatabase[currentChapter][currentLessonIndex];
-            document.getElementById('lessonText').innerText = currentLesson.text;
-            document.getElementById('codeExample').innerText = currentLesson.code;
-            document.getElementById('pageCounter').innerText = (currentLessonIndex + 1);
-            document.getElementById('renderOutput').style.display = "none"; // Cache l'ancien rendu
-            document.getElementById('prevBtn').disabled = (currentLessonIndex === 0);
-        }
-
-        function changeLesson(direction) {
-            currentLessonIndex += direction;
-            if (currentLessonIndex >= learnDatabase[currentChapter].length) {
-                // Passage automatique au chapitre supérieur s'il existe
-                if (currentChapter < 3) {
-                    currentChapter++;
-                    currentLessonIndex = 0;
-                    updateChapterBadges();
-                    loadQuestion();
-                    alert("Félicitations ! Tu passes au chapitre suivant !");
-                    showLesson();
-                } else {
-                    alert("Incroyable ! Tu as terminé toutes les leçons de l'école de code ! Devien un pro dans l'onglet Exercice.");
-                    currentLessonIndex = learnDatabase[currentChapter].length - 1;
-                }
-            } else if (currentLessonIndex < 0) {
-                currentLessonIndex = 0;
-            }
-            showLesson();
-        }
-
-        function generateRender() {
-            const currentLesson = learnDatabase[currentChapter][currentLessonIndex];
-            const output = document.getElementById('renderOutput');
-            output.style.display = "block";
-
-            if (currentLesson.type === "html" || currentLesson.type === "css") {
-                output.innerHTML = currentLesson.code;
-            } else if (currentLesson.type === "js") {
-                output.innerHTML = "<span style='color:gray;'>[Alerte système déclenchée]</span>";
-                alert('Bravo ! Tu as activé du code JavaScript !');
-            } else if (currentLesson.type === "js-anim") {
-                output.innerHTML = "<div class='animated-box'></div>";
-            }
-        }
-
-        // --- BASE DE DONNÉES EXERCICES (Questions de l'IA multiples) ---
-        const exerciseDatabase = {
-            1: [ // Exercices HTML
-                { q: "Crée un grand titre <h1> contenant le mot exact 'Bienvenue'.", req: "<h1>", reqClose: "</h1>", txt: "Bienvenue" },
-                { q: "Ajoute maintenant un paragraphe <p> contenant le mot exact 'Bonjour'.", req: "<p>", reqClose: "</p>", txt: "Bonjour" },
-                { q: "Crée un bouton <button> contenant le texte exact 'Acheter'.", req: "<button>", reqClose: "</button>", txt: "Acheter" }
-            ],
-            2: [ // Exercices CSS
-                { q: "Fais un titre rouge. Écris exactement : <h1 style='color: red;'>Stop</h1>", req: "style='color: red;'", reqClose: "</h1>", txt: "Stop" },
-                { q: "Fais un paragraphe avec un fond jaune. Écris : <p style='background-color: yellow;'>Lumière</p>", req: "background-color: yellow;", reqClose: "</p>", txt: "Lumière" }
-            ],
-            3: [ // Exercices JS
-                { q: "Écris la commande d'alerte exacte pour envoyer 'Gagné' sur l'écran : alert('Gagné');", req: "alert(", reqClose: ");", txt: "Gagné" }
-            ]
-        };
-        let currentExerciseIndex = 0;
-
-        function loadQuestion() {
-            const qBox = document.getElementById('iaQuestionText');
-            if (isFreeMode) {
-                qBox.innerHTML = "Mode exercice libre activé ! Tape le code de ton choix (HTML, CSS ou JS). L'IA va scanner s'il n'y a pas d'erreur critique de fermeture.";
-            } else {
-                qBox.innerHTML = exerciseDatabase[currentChapter][currentExerciseIndex].q;
-            }
-        }
-
-        function toggleExerciseMode() {
-            isFreeMode = !isFreeMode;
-            const modeBtn = document.getElementById('modeBtn');
-            const iaBox = document.getElementById('iaQuestionBox');
-            document.getElementById('feedbackBox').style.display = "none";
-
-            if (isFreeMode) {
-                modeBtn.innerText = "Mode Guidé";
-                iaBox.style.backgroundColor = "#27ae60";
-                iaBox.querySelector('h3').innerText = "📝 Exercice Libre";
-            } else {
-                modeBtn.innerText = "Exercice libre";
-                iaBox.style.backgroundColor = "var(--ia-green)";
-                iaBox.querySelector('h3').innerText = "🤖 Exercice avec des questions";
-            }
-            loadQuestion();
-        }
-
-        function checkCode() {
-            const code = document.getElementById('codeEditor').value.trim();
-            const feedback = document.getElementById('feedbackBox');
-            feedback.style.display = "block";
-
-            if (code === "") {
-                feedback.style.borderLeftColor = "var(--danger-color)";
-                feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA :</span> Tu n'as rien écrit ! Complète l'exercice.";
-                return;
-            }
-
-            if (isFreeMode) {
-                if (code.includes('<') && code.includes('>') && !code.includes('</') && !code.includes('/>')) {
-                    feedback.style.borderLeftColor = "var(--danger-color)";
-                    feedback.innerHTML = "<span style='color:var(--danger-color); font-weight:bold;'>IA Analyse :</span> Attention ! Tu as ouvert une balise mais tu as oublié de la refermer avec un caractere '/' !";
-                } else {
-                    feedback.style.borderLeftColor = "var(--success-color)";
-                    feedback.innerHTML = "<span style='color:var(--success-color); font-weight:bold;'>IA Analyse :</span> Ton code libre semble parfaitement valide. Continue tes tests !";
-                }
-            } else {
-                const currentEx = exerciseDatabase[currentChapter][currentExerciseIndex];
-                
-                const hasOpen = code.includes(currentEx.req);
-                const hasClose = code.includes(currentEx.reqClose);
-                const hasTxt = code.includes(currentEx.txt);
-
-                if (hasOpen && hasClose && hasTxt) {
-                    feedback.style.borderLeftColor = "var(--success-color)";
-                    feedback.innerHTML = `
-                        <span style='color:var(--success-color); font-weight:bold;'>IA Succès ! C'est parfait ! Tu as correctement résolu ma question.</span>
-                        <button class="next-exercise-btn" onclick="nextExercise()">Suivant</button>
-                    `;
-                } else {
-                    feedback.style.borderLeftColor = "var(--danger-color)";
-                    let fautes = "Défauts détectés :<br>";
-                    if(!hasOpen) fautes += `- Il manque l'élément d'ouverture ou l'attribut précis : "${currentEx.req}"<br>`;
-                    if(!hasTxt) fautes += `- Tu as oublié d'écrire le texte exact : "${currentEx.txt}"<br>`;
-                    if(!hasClose) fautes += `- Il manque l'élément de fermeture final : "${currentEx.reqClose}"`;
-                    feedback.innerHTML = `<span style='color:var(--danger-color); font-weight:bold;'>IA Échec :</span><br>${fautes}`;
-                }
-            }
-        }
-
-        function nextExercise() {
-            document.getElementById('feedbackBox').style.display = "none";
-            document.getElementById('codeEditor').value = "";
-            currentExerciseIndex++;
-
-            if (currentExerciseIndex >= exerciseDatabase[currentChapter].length) {
-                alert("Excellent ! Tu as fini tous les exercices de ce chapitre ! Va lire le chapitre suivant dans l'onglet Apprendre.");
-                currentExerciseIndex = 0;
-            }
-            loadQuestion();
-        }
-
-        // Initialisation de la page
-        window.onload = function() {
-            updateChapterBadges();
-            loadQuestion();
-        };
-    </script>
-</body>
-</html>
+            color
